@@ -1,0 +1,12 @@
+.Rhistory
+.Rproj.user
+.RData
+*.rds
+py/build/
+~$*.xlsx
+.DS_Store
+test.*
+debug.*
+*.vscode
+data/
+R/
