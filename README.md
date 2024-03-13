@@ -59,7 +59,7 @@ The data generated in [4] is considered, where we have added cell annotations to
 ```
 `...1_spatial.tar.gz` and `...2_spatial.tar.gz` are our own annotations, the remaining files can be found using [GSE198353](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353)
 
-![github-small](https://github.com/nygctech/INLAomics/blob/main/ProtVsGenes.pdf)
+![github-small](https://github.com/nygctech/INLAomics/blob/main/ProtVsGenes.png)
 
 
 # References
