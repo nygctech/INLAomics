@@ -3,6 +3,8 @@
 Efficient methods based on Integrated Nested Laplace Approximations (INLA) for spatial generalized linear mixed models (GMMM). 
 
 # Models
+All models are implemented in `INLA` using the `inla.rgeneric.define()` method. The relevant scripts are under `./INLA/`
+
 ## Single assay
 Gaussian Markov Random Fields (GMRF) as defined in [1] are considered
 
