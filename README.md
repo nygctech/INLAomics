@@ -7,17 +7,20 @@ All models are implemented using the R-package [`INLA`](https://www.r-inla.org/)
 
 ## Single assay
 Gaussian Markov Random Fields (GMRF) as defined in [1] are considered
+
 $$
 \psi \sim \mathcal{N}_{n}\Big(\mathbf{0}, \tau^{-1}\big(\pi\mathbf{I} + (1-\pi)(\mathbf{D}-\mathbf{W})\big)^{-1}\Big)
 $$
+
 where $\pi \in [0,1)$ weights between independent and spatially structured noise. 
 
 ## Multiple assays
 For the non-conditional multivariate CAR (MCAR) we can utilize parts of [`INLAMSM`](https://github.com/becarioprecario/INLAMSM/tree/master) in implementation with a modified precision matrix following [1]. Thus for the joint modeling of RNAs we refer to Sections 2.3 and 2.4 of [2]. The relevant scripts `./INLA/MCAR.R` and `./INLA/indepMCAR.R`.
 
 The conditional GMRF, i.e., protein | RNA, is based on the approach of [3]. For the case with a single RNA in the conditioning set the relevant scripts are implemented in `./INLA/CCAR.R` and `./INLA/spotCCAR.R` where the latter restricts the cross assay effect to be from spot to spot. For the case with $G$ genes in the conditing set, the suggested extension of [3] is
+
 $$
-p(\psi_1, \psi_1, \ldots, \psi_G)
+p(\psi^{(1)}_1, \psi^{(2)}_1, \ldots, \psi^{(2)}_G)= p(\psi^{(1)} | \psi^{(2)}_1, \ldots, \psi^{(2)}_G) p(\psi^{(2)}_1, \ldots, \psi^{(2)}_G)
 $$
 
 # References
