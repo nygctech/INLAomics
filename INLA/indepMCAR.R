@@ -1,15 +1,13 @@
+## MCAR implementation MCAR(alpha, Lambda) -> PROPER CAR with Lambda diagonal and Leroux precision matrix
+# W: Adjacency matrix for spatial effect
+# k: Number of processes(assays)
+# alpha.min: Minimum value of the spatial convolution parameter
+# alpha.max: Maximum value of the spatial convolution parameter
+
 'inla.rgeneric.indep.MCAR.model' <-
   function(cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
                    "log.prior", "quit"), theta = NULL)
   {
-    ## MCAR implementation MCAR(alpha, Lambda) -> PROPER CAR with Lambda diagonal
-    ## k: number of diseases/blocks
-    ## W: adjacency matrix
-    ## alpha.min: minimum value for alpha
-    ## alpha.max: maximum value for alpha
-    
-    
-    #theta: autocorrelation param. alpha, tau1, tau2, ..., tauk = k+1 hyperparams
     interpret.theta <- function()
     {
       # Function for changing from internal scale to external scale

@@ -1,3 +1,9 @@
+## MCAR implementation MCAR(alpha, Lambda) -> PROPER CAR with non-diagonal Lambda and Leroux precision matrix
+# W: Adjacency matrix for spatial effect
+# k: Number of processes(assays)
+# alpha.min: Minimum value of the spatial convolution parameter
+# alpha.max: Maximum value of the spatial convolution parameter
+
 'inla.rgeneric.MCAR.model' <-
   function(cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
                    "log.prior", "quit"), theta = NULL)

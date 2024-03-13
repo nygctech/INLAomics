@@ -1,3 +1,10 @@
+## spotMCCAR implementation spotMCCAR(alpha, phi) -> proper conditonal CAR with multiple processes in conditioning set, only spot-to-spot effect
+# W: Adjacency SPARSE matrix for spatial effect
+# phi: Point estimates of the GMRF in the conditioning set, a n by k matrix
+# k: Number of processes(assays)
+# alpha.min: Minimum value of the spatial convolution parameter
+# alpha.max: Maximum value of the spatial convolution parameter
+
 'inla.rgeneric.spotMCCAR.model' <- function(cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
                                                     "log.prior", "quit"), theta = NULL){
   interpret.theta <- function()

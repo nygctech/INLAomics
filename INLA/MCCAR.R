@@ -1,8 +1,14 @@
+## MCCAR implementation MCCAR(alpha, phi) -> proper conditonal CAR with multiple processes in conditioning set
+# W: Adjacency SPARSE matrix for spatial effect
+# phi: Point estimates of the GMRF in the conditioning set, a n by k matrix
+# k: Number of processes(assays)
+# alpha.min: Minimum value of the spatial convolution parameter
+# alpha.max: Maximum value of the spatial convolution parameter
+
 'inla.rgeneric.MCCAR.model' <- function(cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
                                                "log.prior", "quit"), theta = NULL){
   interpret.theta <- function()
   {
-    #alpha <- 1 / (1 + exp(-theta[1L]))
     alpha <- alpha.min + (alpha.max - alpha.min) / (1 + exp(-theta[1L]))
     prec <- exp(theta[2L])
     param = c(alpha, prec)

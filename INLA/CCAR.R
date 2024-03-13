@@ -1,8 +1,13 @@
+## CCAR implementation CCAR(alpha, phi) -> proper conditonal CAR with one processes in conditioning set
+# W: Adjacency SPARSE matrix for spatial effect
+# phi: Point estimates of the GMRF in the conditioning set 
+# alpha.min: Minimum value of the spatial convolution parameter
+# alpha.max: Maximum value of the spatial convolution parameter
+
 'inla.rgeneric.CCAR.model' <- function(cmd = c("graph", "Q", "mu", "initial", "log.norm.const",
                                                "log.prior", "quit"), theta = NULL){
   interpret.theta <- function()
   {
-    #alpha <- 1 / (1 + exp(-theta[1L]))
     alpha <- alpha.min + (alpha.max - alpha.min) / (1 + exp(-theta[1L]))
     prec <- exp(theta[2L])
     param = c(alpha, prec)
@@ -26,7 +31,6 @@
   }
   
   mu <- function() {
-    #return((theta[3L]*W)%*%phi)
     return((((theta[4L]*W) + Matrix::Diagonal(nrow(W), theta[3L]))%*%phi)[,1])
   }
   
