@@ -26,7 +26,7 @@ $$
 where the protein GMRF is 
 
 $$
-p(\psi^{(1)} | \psi^{(2)}_1, \ldots, \psi^{(2)}_G) = \mathcal{N}_n\bigg(\sum_{i=1}^G \big(\eta_{0,i}\mathbf{I} + \eta_{1,i}\mathbf{W}\big)\psi_i^{(2)}, \tau^{-1}\big(\pi\mathbf{I} + (1-\pi)(\mathbf{D}-\mathbf{W})\big)^{-1}\bigg)
+p(\psi^{(1)} | \psi^{(2)}_1, \ldots, \psi^{(2)}_G) = \mathcal{N}_n
 $$
 
 # References
