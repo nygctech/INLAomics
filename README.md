@@ -20,7 +20,13 @@ For the non-conditional multivariate CAR (MCAR) we can utilize parts of [`INLAMS
 The conditional GMRF, i.e., protein | RNA, is based on the approach of [3]. For the case with a single RNA in the conditioning set the relevant scripts are implemented in `./INLA/CCAR.R` and `./INLA/spotCCAR.R` where the latter restricts the cross assay effect to be from spot to spot. For the case with $G$ genes in the conditing set, the suggested extension of [3] is
 
 $$
-p(\psi^{(1)}_1, \psi^{(2)}_1, \ldots, \psi^{(2)}_G)= p(\psi^{(1)} | \psi^{(2)}_1, \ldots, \psi^{(2)}_G) p(\psi^{(2)}_1, \ldots, \psi^{(2)}_G)
+p(\psi^{(1)}, \psi^{(2)}_1, \ldots, \psi^{(2)}_G)= p(\psi^{(1)} | \psi^{(2)}_1, \ldots, \psi^{(2)}_G) p(\psi^{(2)}_1, \ldots, \psi^{(2)}_G),
+$$
+
+where the protein GMRF is 
+
+$$
+p(\psi^{(1)} | \psi^{(2)}_1, \ldots, \psi^{(2)}_G) = \mathcal{N}_n\bigg(\psi^{(1)}; \sum_{i=1}^G \big(\eta_{0,i}\mathbf{I} + \eta_{1,i}\mathbf{W}\big)\psi_i^{(2)},\ \tau^{-1}\big(\pi\mathbf{I} + (1-\pi)(\mathbf{D}-\mathbf{W})\big)^{-1}\bigg)
 $$
 
 # References
