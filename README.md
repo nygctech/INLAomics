@@ -31,6 +31,33 @@ $$
 
 The relecant scripts are implemented in `./INLA/MCCAR.R` and `./INLA/spotMCCAR.R`.
 
+# Analysing the SPOTS data
+The data generated in [4] is considered, where we have added cell annotations to two replicates of spleen tissue sections. The files needed to recreate the analysis are
+
+```
+.
+├── GSE198353_spleen_rep_1.csv
+├── GSE198353_spleen_rep_1_filtered_feature_bc_matrix.h5
+├── GSE198353_spleen_rep_2.csv
+├── GSE198353_spleen_rep_2_filtered_feature_bc_matrix.h5
+├── GSE198353_spleen_replicate_1_spatial.tar.gz
+├── GSE198353_spleen_replicate_2_spatial.tar.gz
+├── spatial
+│   ├── qc_aligned_fiducials_image.jpg
+│   ├── qc_detected_tissue_image.jpg
+│   ├── scalefactors_json.json
+│   ├── tissue_hires_image.png
+│   ├── tissue_lowres_image.png
+│   └── tissue_positions_list.csv
+├── spatial2
+│   ├── qc_aligned_fiducials_image.jpg
+│   ├── qc_detected_tissue_image.jpg
+│   ├── scalefactors_json.json
+│   ├── tissue_hires_image.png
+│   ├── tissue_lowres_image.png
+│   └── tissue_positions_list.csv
+```
+
 # References
 [1] Leroux, B. G., Lei, X., and Breslow, N. "Estimation of disease rates in small areas: a new mixed model
 for spatial dependence". In _Statistical models in epidemiology, the environment, and clinical trials_, pages
@@ -39,3 +66,5 @@ for spatial dependence". In _Statistical models in epidemiology, the environment
 [2] Francisco, F., Gómez-Rubio, V., and Martinez-Beneito,  M. A. "Bayesian multivariate spatial models for lattice data with INLA." arXiv preprint arXiv:1909.10804 (2019).
 
 [3] Xiaoping, J., Carlin, B. P., and Banerjee, S. "Generalized hierarchical multivariate CAR models for areal data." Biometrics 61.4 (2005): 950-961.
+
+[4] Ben-Chetrit, N., Niu, X., Swett, A. D., Sotelo, J., Jiao, M. S., Stewart, C. M., ... & Landau, D. A. (2023). Integration of whole transcriptome spatial profiling with protein markers. Nature biotechnology, 41(6), 788-793.
