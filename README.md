@@ -57,6 +57,9 @@ The data generated in [4] is considered, where we have added cell annotations to
 │   ├── tissue_lowres_image.png
 │   └── tissue_positions_list.csv
 ```
+`...1_spatial.tar.gz` and `...2_spatial.tar.gz` are our own annotations, the remaining files can be found using [GSE198353](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353)
+
+
 
 # References
 [1] Leroux, B. G., Lei, X., and Breslow, N. "Estimation of disease rates in small areas: a new mixed model
