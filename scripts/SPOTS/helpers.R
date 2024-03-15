@@ -24,7 +24,7 @@ fig_pairs = list("CD3" = "Cd3e",
 ## loc: location of the required files
 ## nreplicates: whether replicate 1 or 1&2 should be used
 # Required files can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353
-readSpots = function(loc, nreplicates = 1){
+readSpotsSpleen = function(loc, nreplicates = 1){
   spleen_data <- Read10X_h5(paste(loc, "GSE198353_spleen_rep_1_filtered_feature_bc_matrix.h5", sep = ""))
   spleen_img <- Read10X_Image(paste(loc,'spatial',sep = ""))
   spleen <- CreateSeuratObject(spleen_data$`Gene Expression`, assay = "RNA", project = "spleen")
@@ -92,7 +92,7 @@ readSpots = function(loc, nreplicates = 1){
 }
 
 SpotsProteinData = function(loc, genepairs){
-  spotsdata = readSpots("~/Documents/postdoc/MCAR/data/spots/spleen/", 2)
+  spotsdata = readSpotsSpleen("~/Documents/postdoc/MCAR/data/spots/spleen/", 2)
   
   # calculate sizes jointly (i.e. not slidewise)
   prot = cbind(spotsdata$protein1, spotsdata$protein2)
@@ -144,9 +144,10 @@ SpotsProteinData = function(loc, genepairs){
 # Returns protein | preds INLA model
 spotsInla = function(df, W, protein, preds, aar = c("pulp", "bf", "mz", "pals")){
   k = length(preds)
+  naars = length(aar)
   if(k == 1){
     m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
-    rnaform <- as.formula(paste(paste(preds, "~") , paste(aar[2:4],collapse = "+")))
+    rnaform <- as.formula(paste(paste(preds, "~") , paste(aar[2:naars],collapse = "+")))
     l.car <- inla(update(rnaform,.~. + f(idx, model = m)), data = df, 
                   family = "poisson", offset = log(size_rna))
     
@@ -157,8 +158,8 @@ spotsInla = function(df, W, protein, preds, aar = c("pulp", "bf", "mz", "pals"))
                       "idx" = 1:(k*nrow(df)), 
                       "size" = rep(df$size_rna, k))
     mdat = cbind(mdat, X)
-    names(mdat)[4:ncol(mdat)] = paste(aar, rep(paste("_", 1:k, sep = ""), each = 4), sep = "")
-    rnaform = as.formula(paste("rna ~", paste(names(mdat)[4:(ncol(mdat))], collapse= "+"), "-1"))
+    names(mdat)[naars:ncol(mdat)] = paste(aar, rep(paste("_", 1:k, sep = ""), each = naars), sep = "")
+    rnaform = as.formula(paste("rna ~", paste(names(mdat)[naars:(ncol(mdat))], collapse= "+"), "-1"))
     
     m <- inla.MCAR.model(W = W, k = k, alpha.min = 0, alpha.max = 1)
     m.car <- inla(update(rnaform, .~. + f(idx, model = m)), 
@@ -168,11 +169,41 @@ spotsInla = function(df, W, protein, preds, aar = c("pulp", "bf", "mz", "pals"))
                           k = k, alpha.min = 0, alpha.max = 1)
   }
   
-  protform <- as.formula(paste(paste(protein, "~"), paste(aar[2:4],collapse = "+")))
+  protform <- as.formula(paste(paste(protein, "~"), paste(aar[2:naars],collapse = "+")))
   mc.car <- inla(update(protform,.~. + f(idx, model = m)), 
                  data = df, family = "poisson",
                  offset = log(size_prot),
                  control.compute = list(dic = TRUE))
   
   return(mc.car)
+}
+
+readSpotsBreast = function(loc){
+  mmtv_gex <- Read10X_h5(paste(loc,'GSE198353_mmtv_pymt_GEX_filtered_feature_bc_matrix.h5', sep = ""))
+  mmtv_adt <- read.csv(paste(loc, 'GSE198353_mmtv_pymt_ADT.csv.gz', sep = ""), header = TRUE, row.names = 1, check.names = FALSE)
+  mmtv_image <- Read10X_Image(paste(loc, 'spatial'))
+  mmtv <- CreateSeuratObject(mmtv_gex, assay = "RNA", project = "MMTV")
+  mmtv_adt <- CreateSeuratObject(mmtv_adt, assay = "CITE", project = "MMTV")
+  mmtv@assays$CITE <- mmtv_adt@assays$CITE
+  mmtv$nCount_CITE <- mmtv_adt$nCount_CITE
+  mmtv$nFeature_CITE <- mmtv_adt$nFeature_CITE
+  mmtv_image@key <- "A"
+  mmtv@images <- list(A = mmtv_image)
+
+  # spot missing, either Fibroblast-high or low so take the one with highest prevalence
+  aar <- read.csv(paste(loc, 'GSE198353_mmtv_pymt.csv', sep = ""), header = T) %>%
+    add_row(spot = "CCAGTTCGGTAACTCA-1", AARs = "Fibroblast-high") %>%
+    mutate(spot = Barcode,
+           fbh = ifelse(AARs == "Fibroblast-high", 1, 0),
+           fbl = ifelse(AARs == "Fibroblast-low", 1, 0),
+           mac2 = ifelse(AARs == "Mac2-enriched", 1, 0),
+           unknown = ifelse(AARs == "Unknown", 1, 0),
+           lymph = ifelse(AARs == "Lymphocyte-enriched", 1, 0)
+           mac1 = ifelse(AARs == "Mac1-enriched", 1, 0)
+           ) %>%
+    select(!Barcode)
+
+    return(list("RNA" = as.matrix(mmtv@assays$RNA@counts), 
+                "Protein" = as.matrix(mmtv@assays$CITE@counts), 
+                "AAR" = aar))
 }

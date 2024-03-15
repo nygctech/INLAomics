@@ -32,6 +32,7 @@ $$
 The relecant scripts are implemented in `./INLA/MCCAR.R` and `./INLA/spotMCCAR.R`.
 
 # Analysing the SPOTS data
+## Spleen
 The data generated in [4] is considered, where we have added cell annotations to two replicates of spleen tissue sections. The files needed to recreate the analysis are
 
 ```
