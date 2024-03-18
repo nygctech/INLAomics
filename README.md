@@ -29,7 +29,7 @@ $$
 p(\psi^{(1)} | \psi^{(2)}_1, \ldots, \psi^{(2)}_G) = \mathcal{N}_n \bigg( \sum _{i=1}^G \big(\eta _{0,i}\mathbf{I} + \eta _{1,i}\mathbf{W}\big)\psi_i^{(2)}, \tau_1^{-1}\big(\pi_1\mathbf{I} + (1-\pi_1)(\mathbf{D}-\mathbf{W})\big)^{-1} \bigg).
 $$
 
-The relecant scripts are implemented in `./INLA/MCCAR.R` and `./INLA/spotMCCAR.R`.
+The relevant scripts are implemented in `./INLA/MCCAR.R` and `./INLA/spotMCCAR.R`($\eta_{1,i} = 0\  \forall i$).
 
 # Analysing the SPOTS data
 ## Spleen

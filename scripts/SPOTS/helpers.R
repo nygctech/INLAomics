@@ -181,7 +181,7 @@ spotsInla = function(df, W, protein, preds, aar = c("pulp", "bf", "mz", "pals"))
 readSpotsBreast = function(loc){
   mmtv_gex <- Read10X_h5(paste(loc,'GSE198353_mmtv_pymt_GEX_filtered_feature_bc_matrix.h5', sep = ""))
   mmtv_adt <- read.csv(paste(loc, 'GSE198353_mmtv_pymt_ADT.csv.gz', sep = ""), header = TRUE, row.names = 1, check.names = FALSE)
-  mmtv_image <- Read10X_Image(paste(loc, 'spatial'))
+  mmtv_image <- Read10X_Image(paste(loc, 'spatial', sep = ""))
   mmtv <- CreateSeuratObject(mmtv_gex, assay = "RNA", project = "MMTV")
   mmtv_adt <- CreateSeuratObject(mmtv_adt, assay = "CITE", project = "MMTV")
   mmtv@assays$CITE <- mmtv_adt@assays$CITE
@@ -189,21 +189,25 @@ readSpotsBreast = function(loc){
   mmtv$nFeature_CITE <- mmtv_adt$nFeature_CITE
   mmtv_image@key <- "A"
   mmtv@images <- list(A = mmtv_image)
+  coords = GetTissueCoordinates(mmtv)
+  coords$spot = rownames(coords)
+  rownames(coords) = NULL
 
   # spot missing, either Fibroblast-high or low so take the one with highest prevalence
   aar <- read.csv(paste(loc, 'GSE198353_mmtv_pymt.csv', sep = ""), header = T) %>%
-    add_row(spot = "CCAGTTCGGTAACTCA-1", AARs = "Fibroblast-high") %>%
+    add_row(Barcode = "CCAGTTCGGTAACTCA-1", AARs = "Fibroblast-high") %>%
     mutate(spot = Barcode,
            fbh = ifelse(AARs == "Fibroblast-high", 1, 0),
            fbl = ifelse(AARs == "Fibroblast-low", 1, 0),
            mac2 = ifelse(AARs == "Mac2-enriched", 1, 0),
            unknown = ifelse(AARs == "Unknown", 1, 0),
-           lymph = ifelse(AARs == "Lymphocyte-enriched", 1, 0)
+           lymph = ifelse(AARs == "Lymphocyte-enriched", 1, 0),
            mac1 = ifelse(AARs == "Mac1-enriched", 1, 0)
            ) %>%
     select(!Barcode)
 
     return(list("RNA" = as.matrix(mmtv@assays$RNA@counts), 
                 "Protein" = as.matrix(mmtv@assays$CITE@counts), 
-                "AAR" = aar))
+                "AAR" = aar,
+                "coords" = coords))
 }
