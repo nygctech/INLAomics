@@ -58,11 +58,26 @@ The data generated in [4] is considered, where we have added cell annotations to
 │   ├── tissue_lowres_image.png
 │   └── tissue_positions_list.csv
 ```
-`...1_spatial.tar.gz` and `...2_spatial.tar.gz` are our own annotations, the remaining files can be found using [GSE198353](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353)
+`...1_spatial.tar.gz` and `...2_spatial.tar.gz` are our own annotations, the remaining files can be found using [GSE198353](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353). 
 
 The Figure below outlines estimation of $\eta_0$ (left) and $\eta_1$ (right) when restricting the candidate models to a set of proteins and their paired genes. Subsequentily, from the model with the relevant pair we add on genes in the conditing set based on a variable selection procedure. The set of RNAs that are conditioned on is then expanded until there is a drop in the Deviance Information Criterion (DIC). Solid dots represent significant effects, in the sense that their $95$% credible sets does not cover $0$. Code to recreate CD3 rows are found in `./scripts/SPOTS/ProtVsGenes.R`
 
 ![github-small](https://github.com/nygctech/INLAomics/blob/main/ProtVsGenes.png)
+
+## Breast cancer
+The necessary files are
+.
+├── GSE198353_mmtv_pymt.csv
+├── GSE198353_mmtv_pymt_ADT.csv.gz
+├── GSE198353_mmtv_pymt_GEX_filtered_feature_bc_matrix.h5
+├── GSE198353_mmtv_pymt_spatial.tar.gz
+└── spatial
+    ├── aligned_fiducials.jpg
+    ├── detected_tissue_image.jpg
+    ├── scalefactors_json.json
+    ├── tissue_hires_image.png
+    ├── tissue_lowres_image.png
+    └── tissue_positions_list.csv
 
 
 

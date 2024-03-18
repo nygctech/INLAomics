@@ -5,6 +5,26 @@ source("./INLA/MCAR.R")
 source("./INLA/CCAR.R")
 source("./INLA/MCCAR.R")
 
+fig_pairs = list("CD3" = "Cd3e",
+                 "F480" = "Adgre1",
+                 "CD163" = "Cd163",
+                 "CD29" = "Itgb1",
+                 "CD68" = "Cd68",
+                 "IgM" = "Ighm",
+                 "CD38" = "Cd38",
+                 "MadCAM1" = "Madcam1",
+                 "EpCAM" = "Epcam",
+                 "CD11b" = "Itgam",
+                 "CD105" = "Eng",
+                 "CD31" = "Pecam1",
+                 "CD20" = "Ms4a1",
+                 "CD169" = "Siglec1",
+                 "IgD" = "Ighd",
+                 "CD4" = "Cd4",
+                 "CD8" = "Cd8a",
+                 "CD19" = "Cd19",
+                 "B220" = "Ptprc")
+
 loc = "~/Documents/postdoc/MCAR/data/spots/spleen/" # set to folder with data
 df = SpotsProteinData(loc, fig_pairs)
 

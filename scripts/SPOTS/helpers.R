@@ -1,26 +1,6 @@
 library(Seurat)
 library(tidyverse)
 
-fig_pairs = list("CD3" = "Cd3e",
-                 "F480" = "Adgre1",
-                 "CD163" = "Cd163",
-                 "CD29" = "Itgb1",
-                 "CD68" = "Cd68",
-                 "IgM" = "Ighm",
-                 "CD38" = "Cd38",
-                 "MadCAM1" = "Madcam1",
-                 "EpCAM" = "Epcam",
-                 "CD11b" = "Itgam",
-                 "CD105" = "Eng",
-                 "CD31" = "Pecam1",
-                 "CD20" = "Ms4a1",
-                 "CD169" = "Siglec1",
-                 "IgD" = "Ighd",
-                 "CD4" = "Cd4",
-                 "CD8" = "Cd8a",
-                 "CD19" = "Cd19",
-                 "B220" = "Ptprc")
-
 ## loc: location of the required files
 ## nreplicates: whether replicate 1 or 1&2 should be used
 # Required files can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353
@@ -210,4 +190,22 @@ readSpotsBreast = function(loc){
                 "Protein" = as.matrix(mmtv@assays$CITE@counts), 
                 "AAR" = aar,
                 "coords" = coords))
+}
+
+SpotsCancerData = function(loc, genes){
+  breast = readSpotsBreast("~/Documents/postdoc/MCAR/data/spots/cancer/")
+  rna_size = unname(colSums(breast$RNA)) / median(colSums(breast$RNA))
+  protein_size = unname(colSums(breast$Protein)) / median(colSums(breast$Protein))
+  prot = as.data.frame(t(breast$Protein)) %>%
+    mutate(spot = rownames(.))
+  names(prot) = str_replace_all(names(prot), "[\\-|\\s|/|\\-|\\.|\\(|\\)]*", "")
+  rna = as.data.frame(t(breast$RNA[rownames(breast$RNA)[which(rownames(breast$RNA) %in% genes)],])) %>%
+    mutate(spot = rownames(.))
+  names(rna) = str_replace_all(names(rna), "-", "_")
+  df = full_join(breast$AAR, breast$coords, by = "spot") %>%
+    full_join(prot, by = "spot") %>%
+    full_join(rna, by = "spot") %>%
+    mutate(size_prot = protein_size,
+           size_rna = rna_size)
+  return(df)
 }
