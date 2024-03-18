@@ -56,31 +56,31 @@ top_preds = top_preds[which(!(top_preds %in% c("(Intercept)","bf","pals","mz", f
 
 # Protein-gene pair
 preds = fig_pairs[[PROT]]
-ccar = spotsInla(df, W, names(fig_pairs)[PROT], preds)
+ccar = spotsInla(df, W, names(fig_pairs)[PROT], preds, aar = c("pulp", "bf", "mz", "pals"))
 
 # Protein | 2 genes
 preds = c(fig_pairs[[PROT]], top_preds[1])
-c2car = spotsInla(df, W, names(fig_pairs)[PROT], preds)
+c2car = spotsInla(df, W, names(fig_pairs)[PROT], preds, aar = c("pulp", "bf", "mz", "pals"))
 
 # continune if dic lowers
 c2car$dic$dic < ccar$dic$dic
 
 # Protein | 3 genes
 preds = c(fig_pairs[[PROT]], top_preds[1:2])
-c3car = spotsInla(df, W, names(fig_pairs)[PROT], preds)
+c3car = spotsInla(df, W, names(fig_pairs)[PROT], preds, aar = c("pulp", "bf", "mz", "pals"))
 
 # continune if dic lowers
 c3car$dic$dic < c2car$dic$dic
 
 # Protein | 4 genes
 preds = c(fig_pairs[[PROT]], top_preds[1:3])
-c4car = spotsInla(df, W, names(fig_pairs)[PROT], preds)
+c4car = spotsInla(df, W, names(fig_pairs)[PROT], preds, aar = c("pulp", "bf", "mz", "pals"))
 
 # continune if dic lowers
 c4car$dic$dic < c3car$dic$dic
 
 # Protein | 5 genes
 preds = c(fig_pairs[[PROT]], top_preds[1:4])
-c4car = spotsInla(df, W, names(fig_pairs)[PROT], preds)
+c4car = spotsInla(df, W, names(fig_pairs)[PROT], preds, aar = c("pulp", "bf", "mz", "pals"))
 
 # DIC goes up after 5 so we stop.

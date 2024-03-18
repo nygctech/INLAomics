@@ -122,14 +122,16 @@ SpotsProteinData = function(loc, genepairs){
 }
 
 # Returns protein | preds INLA model
-spotsInla = function(df, W, protein, preds, aar = c("pulp", "bf", "mz", "pals")){
+spotsInla = function(df, W, protein, preds, aar, family = c("poisson", "poisson")){
   k = length(preds)
   naars = length(aar)
-  if(k == 1){
+  if(k == 0){
     m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
-    rnaform <- as.formula(paste(paste(preds, "~") , paste(aar[2:naars],collapse = "+")))
+  } else if(k == 1){
+    m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
+    rnaform <- as.formula(paste(paste(preds, "~") , paste(aar[-1],collapse = "+")))
     l.car <- inla(update(rnaform,.~. + f(idx, model = m)), data = df, 
-                  family = "poisson", offset = log(size_rna))
+                  family = family[1], offset = log(size_rna))
     
     m <- inla.CCAR.model(W = W, alpha.min = 0, alpha.max = 1, phi = l.car$summary.random$idx$mean)
   } else {
@@ -138,20 +140,20 @@ spotsInla = function(df, W, protein, preds, aar = c("pulp", "bf", "mz", "pals"))
                       "idx" = 1:(k*nrow(df)), 
                       "size" = rep(df$size_rna, k))
     mdat = cbind(mdat, X)
-    names(mdat)[naars:ncol(mdat)] = paste(aar, rep(paste("_", 1:k, sep = ""), each = naars), sep = "")
+    names(mdat)[4:ncol(mdat)] = paste(aar, rep(paste("_", 1:k, sep = ""), each = naars), sep = "")
     rnaform = as.formula(paste("rna ~", paste(names(mdat)[naars:(ncol(mdat))], collapse= "+"), "-1"))
     
     m <- inla.MCAR.model(W = W, k = k, alpha.min = 0, alpha.max = 1)
     m.car <- inla(update(rnaform, .~. + f(idx, model = m)), 
-                  data = mdat, family = "poisson", offset = log(size))
+                  data = mdat, family = family[1], offset = log(size))
     
     m <- inla.MCCAR.model(W = W, phi = matrix(m.car$summary.random$idx$mean, ncol = k), 
                           k = k, alpha.min = 0, alpha.max = 1)
   }
   
-  protform <- as.formula(paste(paste(protein, "~"), paste(aar[2:naars],collapse = "+")))
+  protform <- as.formula(paste(paste(protein, "~"), paste(aar[-1],collapse = "+")))
   mc.car <- inla(update(protform,.~. + f(idx, model = m)), 
-                 data = df, family = "poisson",
+                 data = df, family = family[2],
                  offset = log(size_prot),
                  control.compute = list(dic = TRUE))
   
