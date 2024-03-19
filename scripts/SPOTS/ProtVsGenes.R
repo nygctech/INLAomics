@@ -5,7 +5,7 @@ source("./INLA/MCAR.R")
 source("./INLA/CCAR.R")
 source("./INLA/MCCAR.R")
 
-# max run time set to 5 hours
+# max run time in seconds
 inla.setOption(inla.timeout = 60*60*5)
 
 fig_pairs = list("CD3" = "Cd3e",

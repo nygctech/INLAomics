@@ -125,7 +125,7 @@ SpotsProteinData = function(loc, genepairs){
 # df: dataframe with one row per spot assumes size columns are named size_rna & size_prot
 # W: neighborhood matrix calculated based on df
 # protein: character of length 1
-# aar: character of length k
+# aar: character of length k that specifies the names of one-hot-encoded AARs. First value treated as reference
 # neighbors: boolean, false gives only spot to spot effects of the GMRF
 # family: character of length 2. Specifies the likelihoods used for RNA and protein models
 spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("poisson", "poisson")){
