@@ -121,8 +121,14 @@ SpotsProteinData = function(loc, genepairs){
   return(df)
 }
 
-# Returns protein | preds INLA model
-spotsInla = function(df, W, protein, preds, aar, family = c("poisson", "poisson")){
+## Returns protein | preds INLA model
+# df: dataframe with one row per spot
+# W: neighborhood matrix calculated based on df
+# protein: character of length 1
+# aar: character of length k
+# neighbors: boolean, false gives only spot to spot effects of the GMRF
+# family: character of length 2. Specifies the likelihoods used for RNA and protein models
+spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("poisson", "poisson")){
   k = length(preds)
   naars = length(aar)
   if(k == 0){
@@ -132,8 +138,11 @@ spotsInla = function(df, W, protein, preds, aar, family = c("poisson", "poisson"
     rnaform <- as.formula(paste(paste(preds, "~") , paste(aar[-1],collapse = "+")))
     l.car <- inla(update(rnaform,.~. + f(idx, model = m)), data = df, 
                   family = family[1], offset = log(size_rna))
-    
-    m <- inla.CCAR.model(W = W, alpha.min = 0, alpha.max = 1, phi = l.car$summary.random$idx$mean)
+    if(neighbors){
+      m <- inla.CCAR.model(W = W, alpha.min = 0, alpha.max = 1, phi = l.car$summary.random$idx$mean)
+    } else {
+      m <- inla.spotCCAR.model(W = W, alpha.min = 0, alpha.max = 1, phi = l.car$summary.random$idx$mean)
+    }
   } else {
     X = kronecker(diag(rep(1,k)), as.matrix(df[, names(df) %in% aar]))
     mdat = data.frame("rna" = unname(unlist(as.vector(df[, names(df) %in% preds]))), 
@@ -146,9 +155,13 @@ spotsInla = function(df, W, protein, preds, aar, family = c("poisson", "poisson"
     m <- inla.MCAR.model(W = W, k = k, alpha.min = 0, alpha.max = 1)
     m.car <- inla(update(rnaform, .~. + f(idx, model = m)), 
                   data = mdat, family = family[1], offset = log(size))
-    
-    m <- inla.MCCAR.model(W = W, phi = matrix(m.car$summary.random$idx$mean, ncol = k), 
-                          k = k, alpha.min = 0, alpha.max = 1)
+    if(neighbors){
+      m <- inla.MCCAR.model(W = W, phi = matrix(m.car$summary.random$idx$mean, ncol = k), 
+                            k = k, alpha.min = 0, alpha.max = 1)
+    } else{
+      m <- inla.spotMCCAR.model(W = W, phi = matrix(m.car$summary.random$idx$mean, ncol = k), 
+                            k = k, alpha.min = 0, alpha.max = 1)
+    }
   }
   
   protform <- as.formula(paste(paste(protein, "~"), paste(aar[-1],collapse = "+")))
