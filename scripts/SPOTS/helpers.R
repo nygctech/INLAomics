@@ -132,8 +132,10 @@ spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("p
   k = length(preds)
   naars = length(aar)
   if(k == 0){
+    # unconditional case
     m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
   } else if(k == 1){
+    # conditional on 1 gene
     m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
     rnaform <- as.formula(paste(paste(preds, "~") , paste(aar[-1],collapse = "+")))
     l.car <- inla(update(rnaform,.~. + f(idx, model = m)), data = df, 
@@ -144,6 +146,7 @@ spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("p
       m <- inla.spotCCAR.model(W = W, alpha.min = 0, alpha.max = 1, phi = l.car$summary.random$idx$mean)
     }
   } else {
+    # conditional on k genes
     X = kronecker(diag(rep(1,k)), as.matrix(df[, names(df) %in% aar]))
     mdat = data.frame("rna" = unname(unlist(as.vector(df[, names(df) %in% preds]))), 
                       "idx" = 1:(k*nrow(df)), 
