@@ -210,6 +210,7 @@ readSpotsBreast = function(loc){
                 "coords" = coords))
 }
 
+# returns a dataframe with one spot per row with all proteins and genes specified by genes argument
 SpotsCancerData = function(loc, genes){
   breast = readSpotsBreast("~/Documents/postdoc/MCAR/data/spots/cancer/")
   rna_size = unname(colSums(breast$RNA)) / median(colSums(breast$RNA))
