@@ -122,7 +122,7 @@ SpotsProteinData = function(loc, genepairs){
 }
 
 ## Returns protein | preds INLA model
-# df: dataframe with one row per spot
+# df: dataframe with one row per spot assumes size columns are named size_rna & size_prot
 # W: neighborhood matrix calculated based on df
 # protein: character of length 1
 # aar: character of length k
@@ -171,7 +171,8 @@ spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("p
   mc.car <- inla(update(protform,.~. + f(idx, model = m)), 
                  data = df, family = family[2],
                  offset = log(size_prot),
-                 control.compute = list(dic = TRUE))
+                 control.compute = list(dic = TRUE)
+                 control.predictor = list(compute = TRUE, link = 1))
   
   return(mc.car)
 }
