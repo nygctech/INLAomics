@@ -5,6 +5,9 @@ source("./INLA/MCAR.R")
 source("./INLA/CCAR.R")
 source("./INLA/MCCAR.R")
 
+# max run time set to 5 hours
+inla.setOption(inla.timeout = 60*60*5)
+
 fig_pairs = list("CD3" = "Cd3e",
                  "F480" = "Adgre1",
                  "CD163" = "Cd163",
@@ -27,6 +30,8 @@ fig_pairs = list("CD3" = "Cd3e",
 
 loc = "~/Documents/postdoc/MCAR/data/spots/spleen/" # set to folder with data
 df = SpotsProteinData(loc, fig_pairs)
+
+
 
 ## Create neighborhood matrix
 coordsmat = cbind(df$imagerow, df$imagecol)
