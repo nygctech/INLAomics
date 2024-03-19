@@ -171,7 +171,7 @@ spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("p
   mc.car <- inla(update(protform,.~. + f(idx, model = m)), 
                  data = df, family = family[2],
                  offset = log(size_prot),
-                 control.compute = list(dic = TRUE)
+                 control.compute = list(dic = TRUE),
                  control.predictor = list(compute = TRUE, link = 1))
   
   return(mc.car)
