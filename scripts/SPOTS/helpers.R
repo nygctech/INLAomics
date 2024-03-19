@@ -94,10 +94,6 @@ SpotsProteinData = function(loc, genepairs){
     full_join(spotsdata$coords1, by = "spot") %>%
     full_join(spotsdata$AAR1, by = "spot")
   
-  df_1 = full_join(rna_1, prot_1, by = "spot") %>%
-    full_join(spotsdata$coords1, by = "spot") %>%
-    full_join(spotsdata$AAR1, by = "spot")
-  
   # Create a dataframe for slide 2 with the genes matching the proteins
   rna_2 = as.data.frame(t(spotsdata$RNA2)) %>%
     select(unname(sapply(genepairs, c))) %>%
