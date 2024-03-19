@@ -89,3 +89,20 @@ preds = c(fig_pairs[[PROT]], top_preds[1:4])
 c4car = spotsInla(df, W, names(fig_pairs)[PROT], preds, aar = c("pulp", "bf", "mz", "pals"))
 
 # DIC goes up after 5 so we stop.
+
+### As a loop
+models = list()
+for(i in 1:6){
+  if(i == 1){
+    preds = fig_pairs[[PROT]]
+    models[[i]] = spotsInla(df, W, names(fig_pairs)[PROT], preds)
+  } else {
+    preds = c(fig_pairs[[PROT]], top_preds[1:iter])
+    models[[i]] = spotsInla(df, W, names(fig_pairs)[PROT], preds)
+  }
+}
+# choose best filtering out those which errored
+models = models[which(sapply(models, class) == "inla")]
+best = models[which.min(sapply(models, function(x){x$dic$dic}))][[1]]
+# number of genes
+k = (nrow(best$summary.hyperpar) - 2)/2
