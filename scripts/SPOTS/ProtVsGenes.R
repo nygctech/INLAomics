@@ -95,13 +95,15 @@ models = list()
 for(i in 1:6){
   if(i == 1){
     preds = fig_pairs[[PROT]]
-    models[[i]] = spotsInla(df, W, names(fig_pairs)[PROT], preds)
   } else {
     preds = c(fig_pairs[[PROT]], top_preds[1:iter])
-    models[[i]] = spotsInla(df, W, names(fig_pairs)[PROT], preds)
   }
+  models[[i]] = try(spotsInla(df, W, names(fig_pairs)[PROT], preds))
 }
+
 # choose best filtering out those which errored
+# timeout: class(r) == "try-error" && length(grep("timeout", geterrmessage())) 
+# error: class(r) == "try-error" && !length(grep("timeout", geterrmessage()))
 models = models[which(sapply(models, class) == "inla")]
 best = models[which.min(sapply(models, function(x){x$dic$dic}))][[1]]
 # number of genes
