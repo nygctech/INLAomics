@@ -270,7 +270,7 @@ predData = function(protein, W, cancerlist, aars, ngenes = 400, npreds = 5){
     select(all_of(top_preds))
   names(rna) = paste("rna", 1:npreds, sep = "")
   
-  return(cbind(df, rna))
+  return(list(df = cbind(df, rna), top_preds = top_preds))
 }
 
 # Generated a nbhd matrix for the cancer data that 
