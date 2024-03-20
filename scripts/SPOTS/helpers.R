@@ -167,7 +167,7 @@ spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("p
   mc.car <- inla(update(protform,.~. + f(idx, model = m)), 
                  data = df, family = family[2],
                  offset = log(size_prot),
-                 control.compute = list(dic = TRUE),
+                 control.compute = list(dic = TRUE,cpo=TRUE, waic=TRUE),
                  control.predictor = list(compute = TRUE, link = 1))
   
   return(mc.car)
@@ -224,4 +224,73 @@ SpotsCancerData = function(loc, genes){
     mutate(size_prot = protein_size,
            size_rna = rna_size)
   return(df)
+}
+
+# Generates data for prediction tasks
+predData = function(protein, W, cancerlist, aars, ngenes = 400, npreds = 5){
+  rna_size = unname(colSums(breast$RNA)) / median(colSums(breast$RNA))
+  protein_size = unname(colSums(breast$Protein)) / median(colSums(breast$Protein))
+  df = as.data.frame(t(breast$RNA)) %>%
+    select(names(sort(rowSums(breast$RNA), T))[1:ngenes]) %>%
+    mutate(spot = rownames(.),
+           prot = unname(breast$Protein[which(rownames(breast$Protein) == protein),]),
+           size = protein_size,
+           idx = 1:nrow(.)) %>%
+    full_join(breast$coords, by = "spot") %>%
+    full_join(breast$AAR, by = "spot") %>%
+    select(!AARs)
+  
+  # can't have - in the formula
+  names(df) = str_replace(names(df), "-", "_")
+  
+  # fit a CAR model with genes in the model matrix
+  protform = as.formula(paste("prot ~ ", paste(names(df)[!(names(df) %in% c(aars[1], "spot", "prot", "size", "idx", "imagerow", "imagecol"))], collapse= "+")))
+  m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
+  prot.car <- inla(update(protform, . ~. + f(idx, model = m)), data = df, 
+                   family = "poisson", offset = log(size))
+
+  # filter out the top genes (S100a6 is omitted as it causes convergence issues)
+  top_preds = prot.car$summary.fixed %>% mutate(mean = abs(mean)) %>% arrange(desc(mean)) %>% rownames
+  top_preds = top_preds[which(!(top_preds %in% c("(Intercept)", aars, "S100a6")))][1:npreds]
+  # put back the -
+  top_preds = str_replace(top_preds, "_", "-")
+  df = data.frame("spot" = dimnames(breast$Protein)[[2]], 
+                  "prot" = unname(breast$Protein[which(rownames(breast$Protein) == protein),]), 
+                  "size_prot" = protein_size, 
+                  "size_rna" = rna_size,
+                  "idx" = 1:length(rna_size)) %>%
+    full_join(., breast$coords, by = "spot") %>%
+    full_join(breast$AAR, by = "spot") %>%
+    select(!AARs)
+  
+  # assumes that the rows of protein and rna are the same in terms of barcodes
+  rna = t(breast$RNA[which(rownames(breast$RNA) %in% top_preds),])
+  rownames(rna) = NULL
+  rna = as.data.frame(rna) %>%
+    select(all_of(top_preds))
+  names(rna) = paste("rna", 1:npreds, sep = "")
+  
+  return(cbind(df, rna))
+}
+
+# Generated a nbhd matrix for the cancer data that 
+# adheres to the row-order of data.frames used
+cancerNbhdMat = function(cancerlist, radius = 55){
+  df = as.data.frame(t(breast$Protein)) %>%
+    mutate(spot = rownames(.)) %>%
+    full_join(breast$coords, by = "spot")
+  
+  coordsmat = cbind(df$imagerow, df$imagecol)
+  W = matrix(0, nrow(coordsmat), nrow(coordsmat))
+  for(i in 1:nrow(W)){
+    for(j in i:nrow(W)){
+      cp = crossprod(coordsmat[i,] - coordsmat[j,])
+      if(cp > 0 && cp < radius){
+        W[i,j] = 1
+        W[j,i] = 1
+      }
+    }
+  }
+  
+  return(W)
 }
