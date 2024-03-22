@@ -14,7 +14,8 @@ hpInla = function(df, W, protein, preds, neighbors = TRUE, family = c("poisson",
   } else if(k == 1){
     # conditional on 1 gene
     m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
-    l.car <- inla(preds ~ f(idx, model = m), data = df, family = family[1], offset = log(size_rna))
+    rnaform <- as.formula(paste(paste(preds, "~"), "1"))
+    l.car <- inla(update(rnaform,.~. + f(idx, model = m)), data = df, family = family[1], offset = log(size_rna))
     if(neighbors){
       m <- inla.CCAR.model(W = W, alpha.min = 0, alpha.max = 1, phi = l.car$summary.random$idx$mean)
     } else {
@@ -41,8 +42,8 @@ hpInla = function(df, W, protein, preds, neighbors = TRUE, family = c("poisson",
                             k = k, alpha.min = 0, alpha.max = 1)
     }
   }
-  
-  mc.car <- inla(protein ~ f(idx, model = m), 
+  protform <- as.formula(paste(paste(protein, "~"), "1"))
+  mc.car <- inla(update(protform,.~. + f(idx, model = m)), 
                  data = df, family = family[2],
                  offset = log(size_prot),
                  control.compute = list(dic = TRUE,cpo=TRUE, waic=TRUE),
