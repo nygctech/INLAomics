@@ -117,7 +117,7 @@ SpotsProteinData = function(loc, genepairs){
   return(df)
 }
 
-## Returns protein | preds INLA model
+## Returns protein | preds INLA model for spots data 
 # df: dataframe with one row per spot assumes size columns are named size_rna & size_prot
 # W: neighborhood matrix calculated based on df
 # protein: character of length 1
@@ -227,7 +227,7 @@ SpotsCancerData = function(loc, genes){
 }
 
 # Generates data for prediction tasks
-predData = function(protein, W, cancerlist, aars, ngenes = 400, npreds = 5){
+predData = function(protein, W, cancerlist, aars, genepair = NULL, ngenes = 400, npreds = 5){
   # ensure that gene names respect formula syntax
   rownames(cancerlist$RNA) = str_replace(rownames(cancerlist$RNA), "-", "_")
   rownames(cancerlist$RNA) = str_extract(rownames(cancerlist$RNA), "^[0-9]*(.*)$", 1)
@@ -235,7 +235,7 @@ predData = function(protein, W, cancerlist, aars, ngenes = 400, npreds = 5){
   rna_size = unname(colSums(cancerlist$RNA)) / median(colSums(cancerlist$RNA))
   protein_size = unname(colSums(cancerlist$Protein)) / median(colSums(cancerlist$Protein))
   df = as.data.frame(t(cancerlist$RNA)) %>%
-    select(names(sort(rowSums(cancerlist$RNA), T))[1:ngenes]) %>%
+    select(names(sort(apply(breast$RNA,1,var), T))[1:ngenes]) %>%
     mutate(spot = rownames(.),
            prot = unname(cancerlist$Protein[which(rownames(cancerlist$Protein) == protein),]),
            size = protein_size,
@@ -253,6 +253,11 @@ predData = function(protein, W, cancerlist, aars, ngenes = 400, npreds = 5){
   # filter out the top genes (S100a6 is omitted as it causes convergence issues)
   top_preds = prot.car$summary.fixed %>% mutate(mean = abs(mean)) %>% arrange(desc(mean)) %>% rownames
   top_preds = top_preds[which(!(top_preds %in% c("(Intercept)", aars, "S100a6")))][1:npreds]
+  if(is.null(genepair)){
+    top_preds = top_preds[which(!(top_preds %in% c("(Intercept)", aars, "S100a6")))][1:npreds]
+  } else {
+    top_preds = c(genepair, top_preds[which(!(top_preds %in% c("(Intercept)", aars, "S100a6")))][1:(npreds-1)])
+  }
   df = data.frame("spot" = dimnames(cancerlist$Protein)[[2]], 
                   "prot" = unname(cancerlist$Protein[which(rownames(cancerlist$Protein) == protein),]), 
                   "size_prot" = protein_size, 
