@@ -227,7 +227,7 @@ SpotsCancerData = function(loc, genes){
 }
 
 # Generates data for prediction tasks
-predData = function(protein, W, cancerlist, aars, genepair = NULL, ngenes = 400, npreds = 5){
+predData = function(protein, W, cancerlist, aars, genepair = NULL, geneindex = 1:400, npreds = 5){
   # ensure that gene names respect formula syntax
   rownames(cancerlist$RNA) = str_replace(rownames(cancerlist$RNA), "-", "_")
   rownames(cancerlist$RNA) = str_extract(rownames(cancerlist$RNA), "^[0-9]*(.*)$", 1)
@@ -235,7 +235,7 @@ predData = function(protein, W, cancerlist, aars, genepair = NULL, ngenes = 400,
   rna_size = unname(colSums(cancerlist$RNA)) / median(colSums(cancerlist$RNA))
   protein_size = unname(colSums(cancerlist$Protein)) / median(colSums(cancerlist$Protein))
   df = as.data.frame(t(cancerlist$RNA)) %>%
-    select(names(sort(apply(breast$RNA,1,var), T))[1:ngenes]) %>%
+    select(names(sort(apply(cancerlist$RNA,1,mean), T))[geneindex]) %>%
     mutate(spot = rownames(.),
            prot = unname(cancerlist$Protein[which(rownames(cancerlist$Protein) == protein),]),
            size = protein_size,
