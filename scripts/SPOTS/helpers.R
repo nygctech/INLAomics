@@ -244,6 +244,20 @@ predData = function(protein, W, cancerlist, aars, genepair = NULL, geneindex = 1
     full_join(cancerlist$AAR, by = "spot") %>%
     select(!AARs)
   
+  if(is.null(W)){
+    coordsmat = cbind(df$imagerow, df$imagecol)
+    W = matrix(0, nrow(coordsmat), nrow(coordsmat))
+    for(i in 1:nrow(W)){
+      for(j in i:nrow(W)){
+        cp = crossprod(coordsmat[i,] - coordsmat[j,])
+        if(cp > 0 && cp < 55){
+          W[i,j] = 1
+          W[j,i] = 1
+        }
+      }
+    }
+  }
+  
   # fit a CAR model with genes in the model matrix
   protform = as.formula(paste("prot ~ ", paste(names(df)[!(names(df) %in% c(aars[1], "spot", "prot", "size", "idx", "imagerow", "imagecol"))], collapse= "+")))
   m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
