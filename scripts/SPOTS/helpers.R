@@ -123,8 +123,9 @@ SpotsProteinData = function(loc, genepairs){
 # protein: character of length 1
 # aar: character of length k that specifies the names of one-hot-encoded AARs. First value treated as reference
 # neighbors: boolean, false gives only spot to spot effects of the GMRF
+# ind: boolean, false asummes correlated RNA
 # family: character of length 2. Specifies the likelihoods used for RNA and protein models
-spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("poisson", "poisson")){
+spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, ind = FALSE, family = c("poisson", "poisson")){
   k = length(preds)
   naars = length(aar)
   if(k == 0){
@@ -150,8 +151,11 @@ spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, family = c("p
     mdat = cbind(mdat, X)
     names(mdat)[4:ncol(mdat)] = paste(aar, rep(paste("_", 1:k, sep = ""), each = naars), sep = "")
     rnaform = as.formula(paste("rna ~", paste(names(mdat)[naars:(ncol(mdat))], collapse= "+"), "-1"))
-    
-    m <- inla.MCAR.model(W = W, k = k, alpha.min = 0, alpha.max = 1)
+    if(ind){
+      m <- inla.INDMCAR.model(W = W, k = k, alpha.min = 0, alpha.max = 1)
+    } else {
+      m <- inla.MCAR.model(W = W, k = k, alpha.min = 0, alpha.max = 1)
+    }
     m.car <- inla(update(rnaform, .~. + f(idx, model = m)), 
                   data = mdat, family = family[1], offset = log(size))
     if(neighbors){
