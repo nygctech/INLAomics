@@ -42,9 +42,9 @@ parallel::clusterEvalQ(my.cluster, {
 doParallel::registerDoParallel(cl = my.cluster)
 models = foreach(i = 1:(sum(str_detect(names(df), "^rna[0-9]*$"))+1)) %dopar% {
   if(i == 1){
-    try(spotsInla(df, W, "prot", character(), aar = aar, neighbors = T, family = c("poisson", "poisson")))
+    spotsInla(df, W, "prot", character(), aar = aar, neighbors = T, family = c("poisson", "poisson"))
   } else{
-    try(spotsInla(df, W, "prot", paste("rna",1:(i-1),sep=""), aar = aar, neighbors = T, family = c("poisson", "poisson")))
+    spotsInla(df, W, "prot", paste("rna",1:(i-1),sep=""), aar = aar, neighbors = T, family = c("poisson", "poisson"))
   }
 }
 parallel::stopCluster(cl = my.cluster)
