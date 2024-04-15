@@ -4,15 +4,16 @@ library(scico)
 library(tidyverse)
 library(foreach)
 
-source("../scripts/SPOTS/helpers.R")
-source("../scripts/utils.R")
-source("../INLA/LCAR.R")
-source("../INLA/MCAR.R")
-source("../INLA/CCAR.R")
-source("../INLA/MCCAR.R")
+source("./scripts/SPOTS/helpers.R")
+source("./scripts/utils.R")
+source("./scripts/utils.R")
+source("./INLA/LCAR.R")
+source("./INLA/MCAR.R")
+source("./INLA/CCAR.R")
+source("./INLA/MCCAR.R")
 
 # CD4 prediction example
-spots = readSpotsSpleen("~/Documents/postdoc/MCAR/data/spots/spleen/")
+spots = readSpotsSpleen("~/Documents/postdoc/MCAR/data/spots/spleen/") # set to location of spleen data
 aar = c("pulp", "bf", "mz", "pals")
 names(spots)[2] = "Protein"
 dat = predData("CD4", NULL, spots, aar, geneindex = 1:200, genepair = "Cd4")
@@ -36,7 +37,7 @@ for(i in 1:nrow(W)){
 
 my.cluster <- parallel::makeCluster(6)
 parallel::clusterEvalQ(my.cluster, {
-  source('parlibs.R')
+  source('./scripts/parlibs.R')
 })
 doParallel::registerDoParallel(cl = my.cluster)
 models = foreach(i = 1:(sum(str_detect(names(df), "^rna[0-9]*$"))+1)) %dopar% {
