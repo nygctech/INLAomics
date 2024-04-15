@@ -65,7 +65,7 @@ The Figure below outlines estimation of $\eta_0$ (left) and $\eta_1$ (right) whe
 ![github-small](https://github.com/nygctech/INLAomics/blob/main/ProtVsGenes.png)
 
 ## Breast cancer
-The necessary files are
+The necessary files are 
 ```
 .
 ├── GSE198353_mmtv_pymt.csv
@@ -80,7 +80,7 @@ The necessary files are
     ├── tissue_lowres_image.png
     └── tissue_positions_list.csv
 ```
-
+Example code can be found in `./scripts/SPOTS/BreastPrediction.R`
 
 # References
 [1] Leroux, B. G., Lei, X., and Breslow, N. "Estimation of disease rates in small areas: a new mixed model
