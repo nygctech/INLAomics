@@ -1,5 +1,4 @@
 displayResults = function(InlaList, training, test, neighbors = T){
-  #pred_idx = as.integer(rownames(test))
   return(data.frame(
     k = sapply(InlaList, function(x){(ifelse(neighbors, (nrow(x$summary.hyperpar)-2)/2, nrow(x$summary.hyperpar)-2))}),
     dic = sapply(InlaList, function(x){x$dic$dic}),
