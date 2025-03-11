@@ -49,12 +49,10 @@ transformed parameters{
   real<lower = 0> tau2;
   real<lower = 0, upper = 1> alpha1;
   real<lower = 0, upper = 1> alpha2;
-  //real<lower = 0, upper = 1> zip;
   tau1 = exp(theta1);
   tau2 = exp(theta2);
   alpha1 = inv_logit(nu1);
   alpha2 = inv_logit(nu2);
-  //zip = inv_logit(zipt);
 }
 
 model {

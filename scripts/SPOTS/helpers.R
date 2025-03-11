@@ -271,7 +271,7 @@ predData = function(protein, W, cancerlist, aars, genepair = NULL, geneindex = 1
   # filter out the top genes (S100a6 is omitted as it causes convergence issues)
   top_preds = prot.car$summary.fixed %>% mutate(mean = abs(mean)) %>% arrange(desc(mean)) %>% rownames
   top_preds = top_preds[which(!(top_preds %in% c("(Intercept)", aars, "S100a6")))][1:npreds]
-  if(is.null(genepair)){
+  if(is.null(genepair) || genepair %in% top_preds ){
     top_preds = top_preds[which(!(top_preds %in% c("(Intercept)", aars, "S100a6")))][1:npreds]
   } else {
     top_preds = c(genepair, top_preds[which(!(top_preds %in% c("(Intercept)", aars, "S100a6")))][1:(npreds-1)])

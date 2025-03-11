@@ -82,6 +82,45 @@ The necessary files are
 ```
 Example code can be found in `./scripts/SPOTS/BreastPrediction.R`
 
+# Other datasets
+## Visium10x, tonsil
+[Visium10x datasets](https://www.10xgenomics.com/datasets/visium-cytassist-gene-and-protein-expression-library-of-human-tonsil-with-add-on-antibodies-h-e-6-5-mm-ffpe-2-standard)
+```
+.
+├── raw_feature_bc_matrix
+│   ├── barcodes.tsv.gz
+│   ├── features.tsv.gz
+│   └── matrix.mtx.gz
+└── spatial
+    ├── aligned_fiducials.jpg
+    ├── aligned_tissue_image.jpg
+    ├── cytassist_image.tiff
+    ├── detected_tissue_image.jpg
+    ├── scalefactors_json.json
+    ├── spatial_enrichment.csv
+    ├── tissue_hires_image.png
+    ├── tissue_lowres_image.png
+    └── tissue_positions.csv
+```
+Example code can be found in `./scripts/visium/tonsil.R`
+
+## Highplex data
+[GSE213264](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE213264)
+```
+.
+├── GSM6578059_mousecolon_RNA.tsv.gz
+├── GSM6578061_mousekidney_RNA.tsv.gz
+├── GSM6578062_humantonsil_RNA.tsv.gz
+├── GSM6578064_humanthymus_RNA.tsv.gz
+├── GSM6578065_humanskin_RNA.tsv.gz
+├── GSM6578068_mousecolon_protein.tsv.gz
+├── GSM6578070_mousekidney_protein.tsv.gz
+├── GSM6578071_humantonsil_protein.tsv.gz
+├── GSM6578073_humanthymus_protein.tsv.gz
+└── GSM6578074_humanskin_protein.tsv.gz
+```
+Example code can be found in `./scripts/Highplex/highplex.R`
+
 # References
 [1] Leroux, B. G., Lei, X., and Breslow, N. "Estimation of disease rates in small areas: a new mixed model
 for spatial dependence". In _Statistical models in epidemiology, the environment, and clinical trials_, pages

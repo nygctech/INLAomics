@@ -1,6 +1,6 @@
 library(tidyverse)
 
-## Returns protein | preds INLA model for highplex data
+## Returns protein | preds INLA model for highplex data (no fixed effects)
 # df: dataframe with one row per spot assumes size columns are named size_rna & size_prot
 # W: neighborhood matrix calculated based on df
 # protein: character of length 1

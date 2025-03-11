@@ -60,3 +60,13 @@ models = foreach(i = 1:(sum(str_detect(names(df), "^rna[0-9]*$"))+1)) %dopar% {
 parallel::stopCluster(cl = my.cluster)
 
 displayResults(models, df, df_pred, T)
+
+## To get sigma^2 and pi on original scale (example)
+marg.stdev <- inla.tmarginal(function(tau) exp(-tau),
+                             models[[1]]$marginals.hyperpar[[2]])
+
+marg.alpha <- inla.tmarginal(function(alpha) plogis(alpha),
+                             models[[1]]$marginals.hyperpar[[1]])
+inla.zmarginal(marg.stdev)
+inla.zmarginal(marg.alpha)
+
