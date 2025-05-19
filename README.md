@@ -8,9 +8,10 @@ All models are implemented through the R-package [`INLA`](https://www.r-inla.org
 
 
 # Analysing the SPOTS data
-## Spleen
-The data generated in [4] is considered, where we have added cell annotations to two replicates of spleen tissue sections. The files needed to recreate the analysis are
+The data generated in [4] is considered, [GSE198353](www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353), where we have added cell annotations to two replicates of spleen tissue sections. 
 
+## Spleen
+The necessary files are 
 ```
 .
 ├── GSE198353_spleen_rep_1.csv
@@ -34,7 +35,7 @@ The data generated in [4] is considered, where we have added cell annotations to
 │   ├── tissue_lowres_image.png
 │   └── tissue_positions_list.csv
 ```
-`...1_spatial.tar.gz` and `...2_spatial.tar.gz` are our own annotations, the remaining files can be found using [GSE198353](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353). 
+`...1_spatial.tar.gz` and `...2_spatial.tar.gz` are our own annotations found in `./data`. The remaining files can be found using [GSE198353](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353). 
 
 The Figure below outlines estimation of $\eta_0$ (left) and $\eta_1$ (right) when restricting the candidate models to a set of proteins and their paired genes. Subsequentily, from the model with the relevant pair we add on genes in the conditing set based on a variable selection procedure. The set of RNAs that are conditioned on is then expanded until there is a drop in the Deviance Information Criterion (DIC). Solid dots represent significant effects, in the sense that their $95$% credible sets does not cover $0$. Code to recreate CD3 rows are found in `./scripts/SPOTS/ProtVsGenes.R` with runtime on Apple M2 approximately 6h.
 
