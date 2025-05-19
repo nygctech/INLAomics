@@ -31,7 +31,7 @@ sp_d <- list(n = nrow(W),
              D_sparse = D_sparse,
              lambda = lambda)
 
-clusters = detectCores()
+clusters = parallel::detectCores()
 NSIM = 10000
 indexList = split(1:NSIM, ceiling((1:NSIM)/(NSIM/clusters)))
 
@@ -94,7 +94,6 @@ cl = makeCluster(clusters, outfile = "log.txt")
 clusterEvalQ(cl, {
   source('parlibs.R')
 })
-a = parSapply(cl, indexList, InlaVsMCMC, W, sp_d)
+sim = parSapply(cl, indexList, InlaVsMCMC, W, sp_d)
 stopCluster(cl)
 
-save(a, file = paste("sim", format(Sys.time(), "%M%S"), ".RData", sep = ""))

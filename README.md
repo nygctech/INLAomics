@@ -11,7 +11,7 @@ All models are implemented through the R-package [`INLA`](https://www.r-inla.org
 
 
 # Analysing the SPOTS data
-The data generated in [4] is considered where files can be accessed at [GSE198353](www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353). We have added cell annotations to two replicates of spleen tissue sections found in `./annotations`.
+The data generated in [1] is considered where files can be accessed at [GSE198353](www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353). We have added cell annotations to two replicates of spleen tissue sections found in `./annotations`.
 
 ## Spleen
 The necessary files are 
@@ -103,15 +103,7 @@ Example code can be found in `./scripts/visium/tonsil.R`
 Example code can be found in `./scripts/Highplex/highplex.R`
 
 # Simulation study
-The script for carrying out the simulation study is found in `./scripts/simulation/simulation.R`. One round of Monte-Carlo estimates takes approximately 30 minutes.
+The scripts for carrying out the simulation studies are found in `./scripts/simulation/`. The script for comparisons between INLA and MCMC is outlined `InlaVsMcmc.R`, and one round of Monte-Carlo estimates takes approximately 30 minutes. The script for comparisons between INLAomics and correlation based measurements is found in `InlaVsCorr.R`, where one round Monte-Carlo estimates takes approximately 25 seconds to obtain.
 
 # References
-[1] Leroux, B. G., Lei, X., and Breslow, N. "Estimation of disease rates in small areas: a new mixed model
-for spatial dependence". In _Statistical models in epidemiology, the environment, and clinical trials_, pages
-179–191. Springer, 2000.
-
-[2] Francisco, F., Gómez-Rubio, V., and Martinez-Beneito,  M. A. "Bayesian multivariate spatial models for lattice data with INLA." arXiv preprint arXiv:1909.10804 (2019).
-
-[3] Xiaoping, J., Carlin, B. P., and Banerjee, S. "Generalized hierarchical multivariate CAR models for areal data." Biometrics 61.4 (2005): 950-961.
-
-[4] Ben-Chetrit, N., Niu, X., Swett, A. D., Sotelo, J., Jiao, M. S., Stewart, C. M., ... & Landau, D. A. (2023). Integration of whole transcriptome spatial profiling with protein markers. Nature biotechnology, 41(6), 788-793.
+[1] Ben-Chetrit, N., Niu, X., Swett, A. D., Sotelo, J., Jiao, M. S., Stewart, C. M., ... & Landau, D. A. (2023). Integration of whole transcriptome spatial profiling with protein markers. Nature biotechnology, 41(6), 788-793.
