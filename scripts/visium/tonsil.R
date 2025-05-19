@@ -11,7 +11,7 @@ source("./INLA/MCAR.R")
 source("./INLA/CCAR.R")
 source("./INLA/MCCAR.R")
 
-data_dir = "~./Documents/INLAomics/"  # set to location of data (set
+data_dir = "./data/visium"  # set to location of data
 
 data <- Read10X(data.dir = paste(data_dir, "raw_feature_bc_matrix", sep = ""))
 tonsil = CreateSeuratObject(counts = data$`Gene Expression`)

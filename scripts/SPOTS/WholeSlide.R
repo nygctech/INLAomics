@@ -19,7 +19,7 @@ genes = c("Cd4", "Ms4a1", "Ccl21a","Sh3bgrl3","H2-Q7" )
 genes = c("Adgre1","Vcam1","Ltb","Rps13","Igfbp7")
 
 # load both sections
-spotsdata = readSpotsSpleen("~/Documents/postdoc/MCAR/data/spots/spleen/", 2)
+spotsdata = readSpotsSpleen("./spots/spleen/", 2)
 
 # calculate sizes jointly (i.e. not slidewise)
 prot = cbind(spotsdata$protein1, spotsdata$protein2)

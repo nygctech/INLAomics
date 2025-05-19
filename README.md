@@ -1,8 +1,8 @@
 # INLAomics
+INLAomics is a hierarchical Bayesian model for analysing multiomic Spatial data using Integrated Nested Laplace Approximations (INLA). Biorxiv preprint [`INLAomics for Scalable and Interpretable Spatial Multiomic Data Integration`](https://www.biorxiv.org/content/10.1101/2025.05.02.651831v1.abstract).
 
 ![github-small](https://github.com/nygctech/INLAomics/blob/main/main_1.png)
 
-INLAomics is a hierarchical Bayesian model for analysing multiomic Spatial data using Integrated Nested Laplace Approximations (INLA). Biorxiv preprint [`INLAomics for Scalable and Interpretable Spatial Multiomic Data Integration`](https://www.biorxiv.org/content/10.1101/2025.05.02.651831v1.abstract).
 
 ## Versions & Installation
 All analysis in manuscript is carried out in `R` V. 4.3.1 with packages `R-INLA` V. 23.12.17 and `R-stan` V. 2.26.23 (`Stan` V. 2.26.1). For instructions on installation we refer to [`R-INLA`](https://www.r-inla.org/download-install) and [`mc-stan`](https://mc-stan.org/install/).
@@ -40,9 +40,10 @@ The necessary files are
 ```
 `...1_spatial.tar.gz` and `...2_spatial.tar.gz` are our own annotations. 
 
-The Figure below outlines estimation of $\eta_0$ (left) and $\eta_1$ (right) when restricting the candidate models to a set of proteins and their paired genes. Subsequentily, from the model with the relevant pair we add on genes in the conditing set based on a variable selection procedure. The set of RNAs that are conditioned on is then expanded until there is a drop in the Deviance Information Criterion (DIC). Solid dots represent significant effects, in the sense that their $95$% credible sets does not cover $0$. Code to recreate CD3 rows are found in `./scripts/SPOTS/ProtVsGenes.R` with runtime on Apple M2 approximately 6h.
+Figure d above illustrates how `INLAomoics` can be utilized to construct genes-to-protein networks based on specific parameter estimates that encodes assay-to-assay effects.
+Code to recreate CD3 rows are found in `./scripts/SPOTS/ProtVsGenes.R` with runtime on Apple M2 approximately 6h. Instructions for recreating any of the other rows of Figure d is outlined in the script file.
 
-![github-small](https://github.com/nygctech/INLAomics/blob/main/ProtVsGenes.png)
+To recreate the results of figure e & f, see `./scripts/SPOTS/SpleenPred.R` 
 
 ## Breast cancer
 The necessary files are 

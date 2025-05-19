@@ -72,7 +72,7 @@ readSpotsSpleen = function(loc, nreplicates = 1){
 }
 
 SpotsProteinData = function(loc, genepairs){
-  spotsdata = readSpotsSpleen("~/Documents/postdoc/MCAR/data/spots/spleen/", 2)
+  spotsdata = readSpotsSpleen("./spots/spleen/", 2) # set to location with data
   
   # calculate sizes jointly (i.e. not slidewise)
   prot = cbind(spotsdata$protein1, spotsdata$protein2)
@@ -213,7 +213,7 @@ readSpotscancerlist = function(loc){
 
 # returns a dataframe with one spot per row with all proteins and genes specified by genes argument
 SpotsCancerData = function(loc, genes){
-  cancerlist = readSpotscancerlist("~/Documents/postdoc/MCAR/data/spots/cancer/")
+  cancerlist = readSpotscancerlist("./spots/cancer/") # set to location with data
   rna_size = unname(colSums(cancerlist$RNA)) / median(colSums(cancerlist$RNA))
   protein_size = unname(colSums(cancerlist$Protein)) / median(colSums(cancerlist$Protein))
   prot = as.data.frame(t(cancerlist$Protein)) %>%

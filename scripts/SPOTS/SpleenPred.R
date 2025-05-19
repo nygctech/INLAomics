@@ -13,7 +13,7 @@ source("./INLA/CCAR.R")
 source("./INLA/MCCAR.R")
 
 # CD4 prediction example
-spots = readSpotsSpleen("~/Documents/postdoc/MCAR/data/spots/spleen/") # set to location of spleen
+spots = readSpotsSpleen("./spots/spleen/") # set to data location
 aar = c("pulp", "bf", "mz", "pals")
 names(spots)[2] = "Protein"
 dat = predData("CD4", NULL, spots, aar, geneindex = 1:200, genepair = "Cd4")

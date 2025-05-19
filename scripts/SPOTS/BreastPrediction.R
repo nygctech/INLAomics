@@ -12,7 +12,7 @@ source("./INLA/MCCAR.R")
 source("./INLA/spotCCAR.R")
 source("./INLA/spotMCCAR.R")
 
-breast = readSpotscancerlist("~/Documents/postdoc/MCAR/data/spots/cancer/")
+breast = readSpotscancerlist("./spots/cancer/") # set to data location
 aar = c("fbh", "fbl", "mac2", "unknown", "lymph", "mac1")
 
 # Podoplanin example
