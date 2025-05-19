@@ -103,7 +103,7 @@ Example code can be found in `./scripts/visium/tonsil.R`
 Example code can be found in `./scripts/Highplex/highplex.R`
 
 # Simulation study
-The scripts for carrying out the simulation studies are found in `./scripts/simulation/`. The script for comparisons between INLA and MCMC is outlined `InlaVsMcmc.R`, and one round of Monte-Carlo estimates takes approximately 30 minutes. The script for comparisons between INLAomics and correlation based measurements is found in `InlaVsCorr.R`, where one round Monte-Carlo estimates takes approximately 25 seconds to obtain.
+The scripts for carrying out the simulation studies are found in `./scripts/simulation/`. The script for comparison between INLA and MCMC is outlined `InlaVsMcmc.R`, where one Monte-Carlo round takes approximately 30 minutes. The script for comparison between INLAomics and univariate correlation is found in `InlaVsCorr.R`, where one Monte-Carlo round takes approximately 25 seconds.
 
 # References
 [1] Ben-Chetrit, N., Niu, X., Swett, A. D., Sotelo, J., Jiao, M. S., Stewart, C. M., ... & Landau, D. A. (2023). Integration of whole transcriptome spatial profiling with protein markers. Nature biotechnology, 41(6), 788-793.
