@@ -125,7 +125,7 @@ Example code can be found in `./scripts/visium/tonsil.R`
 Example code can be found in `./scripts/Highplex/highplex.R`
 
 # Simulation study
-The script for carrying out the simulation study is found in `./scripts/simulation/sim.R`.
+The script for carrying out the simulation study is found in `./scripts/simulation/simulation.R`. One round of Monte-Carlo estimates takes approximately 30 minutes.
 
 # References
 [1] Leroux, B. G., Lei, X., and Breslow, N. "Estimation of disease rates in small areas: a new mixed model
