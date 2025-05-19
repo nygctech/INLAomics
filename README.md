@@ -1,11 +1,11 @@
 # INLAomics
 INLAomics is a hierarchical Bayesian model for analysing multiomic Spatial data using Integrated Nested Laplace Approximations (INLA). Biorxiv preprint [`INLAomics for Scalable and Interpretable Spatial Multiomic Data Integration`](https://www.biorxiv.org/content/10.1101/2025.05.02.651831v1.abstract).
 
-# Models
-All models are implemented using the R-package [`INLA`](https://www.r-inla.org/) using the `inla.rgeneric.define()` method. The relevant scripts are under `./INLA/`
-
 ## Versions & Installation
 All analysis in manuscript is carried out in `R` V. 4.3.1 with packages `R-INLA` V. 23.12.17 and `R-stan` V. 2.26.23 (`Stan` V. 2.26.1). For instructions on installation we refer to [`R-INLA`](https://www.r-inla.org/download-install) and [`mc-stan`](https://mc-stan.org/install/).
+
+All models are implemented through the R-package [`INLA`](https://www.r-inla.org/) using the `inla.rgeneric.define()` method. The relevant scripts are under `./INLA/`
+
 
 # Analysing the SPOTS data
 ## Spleen
