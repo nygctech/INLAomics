@@ -1,9 +1,12 @@
 # INLAomics
 
-Spatial generalized linear mixed models (GMMM) methods for multiomic analysis using Integrated Nested Laplace Approximations (INLA). 
+Spatial generalized linear mixed models (GMMM) methods for multiomic analysis using Integrated Nested Laplace Approximations (INLA). Biorxiv preprint [`INLAomics for Scalable and Interpretable Spatial Multiomic Data Integration`](https://www.biorxiv.org/content/10.1101/2025.05.02.651831v1.abstract).
 
 # Models
 All models are implemented using the R-package [`INLA`](https://www.r-inla.org/) using the `inla.rgeneric.define()` method. The relevant scripts are under `./INLA/`
+
+## Versions
+All analysis in manuscript is carried out in `R` V. 4.3.1 with packages `R-INLA` V. 23.12.17 and `R-stan` V. 2.26.23 (`Stan` V. 2.26.1).
 
 ## Single assay
 Gaussian Markov Random Fields (GMRF) as defined in [1] are considered
@@ -60,7 +63,7 @@ The data generated in [4] is considered, where we have added cell annotations to
 ```
 `...1_spatial.tar.gz` and `...2_spatial.tar.gz` are our own annotations, the remaining files can be found using [GSE198353](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353). 
 
-The Figure below outlines estimation of $\eta_0$ (left) and $\eta_1$ (right) when restricting the candidate models to a set of proteins and their paired genes. Subsequentily, from the model with the relevant pair we add on genes in the conditing set based on a variable selection procedure. The set of RNAs that are conditioned on is then expanded until there is a drop in the Deviance Information Criterion (DIC). Solid dots represent significant effects, in the sense that their $95$% credible sets does not cover $0$. Code to recreate CD3 rows are found in `./scripts/SPOTS/ProtVsGenes.R`
+The Figure below outlines estimation of $\eta_0$ (left) and $\eta_1$ (right) when restricting the candidate models to a set of proteins and their paired genes. Subsequentily, from the model with the relevant pair we add on genes in the conditing set based on a variable selection procedure. The set of RNAs that are conditioned on is then expanded until there is a drop in the Deviance Information Criterion (DIC). Solid dots represent significant effects, in the sense that their $95$% credible sets does not cover $0$. Code to recreate CD3 rows are found in `./scripts/SPOTS/ProtVsGenes.R` with runtime on Apple M2 approximately 6h.
 
 ![github-small](https://github.com/nygctech/INLAomics/blob/main/ProtVsGenes.png)
 
@@ -120,6 +123,9 @@ Example code can be found in `./scripts/visium/tonsil.R`
 └── GSM6578074_humanskin_protein.tsv.gz
 ```
 Example code can be found in `./scripts/Highplex/highplex.R`
+
+# Simulation study
+The script for carrying out the simulation study is found in `./scripts/simulation/sim.R`.
 
 # References
 [1] Leroux, B. G., Lei, X., and Breslow, N. "Estimation of disease rates in small areas: a new mixed model
