@@ -8,5 +8,4 @@ py/build/
 test.*
 debug.*
 *.vscode
-data/
 R/
