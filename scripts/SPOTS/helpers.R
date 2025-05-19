@@ -72,7 +72,7 @@ readSpotsSpleen = function(loc, nreplicates = 1){
 }
 
 SpotsProteinData = function(loc, genepairs){
-  spotsdata = readSpotsSpleen("./spots/spleen/", 2) # set to location with data
+  spotsdata = readSpotsSpleen(loc, 2) # set to location with data
   
   # calculate sizes jointly (i.e. not slidewise)
   prot = cbind(spotsdata$protein1, spotsdata$protein2)
