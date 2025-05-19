@@ -1,0 +1,161 @@
+---
+title: "INLAomics tutorial"
+output: html_document
+date: "2025-05-19"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Packages
+```{r libs}
+library(INLA)
+library(tidyverse)
+
+source(url("https://raw.githubusercontent.com/nygctech/INLAomics/refs/heads/main/INLA/LCAR.R"))
+source(url("https://raw.githubusercontent.com/nygctech/INLAomics/refs/heads/main/INLA/CCAR.R"))
+source(url("https://raw.githubusercontent.com/nygctech/INLAomics/refs/heads/main/INLA/MCAR.R"))
+source(url("https://raw.githubusercontent.com/nygctech/INLAomics/refs/heads/main/INLA/MCCAR.R"))
+source(url("https://raw.githubusercontent.com/nygctech/INLAomics/refs/heads/main/scripts/SPOTS/helpers.R"))
+```
+
+## Data format
+Data should be in long format with each row corresponding to a spot. Below is the first 5 rows of CD3-Cd3e pairs together with sizes, coordinates and cell annotations used as the fixed effects model matrix.
+
+```{r loaddata, message = F, warning = F}
+fig_pairs = list("CD3" = "Cd3e",
+                 "F480" = "Adgre1",
+                 "CD163" = "Cd163",
+                 "CD29" = "Itgb1",
+                 "CD68" = "Cd68",
+                 "IgM" = "Ighm",
+                 "CD38" = "Cd38",
+                 "MadCAM1" = "Madcam1",
+                 "EpCAM" = "Epcam",
+                 "CD11b" = "Itgam",
+                 "CD105" = "Eng",
+                 "CD31" = "Pecam1",
+                 "CD20" = "Ms4a1",
+                 "CD169" = "Siglec1",
+                 "IgD" = "Ighd",
+                 "CD4" = "Cd4",
+                 "CD8" = "Cd8a",
+                 "CD19" = "Cd19",
+                 "B220" = "Ptprc")
+
+df = SpotsProteinData("~/Documents/postdoc/MCAR/data/spots/spleen/", fig_pairs)
+selection = c("CD3", "Cd3e", "size_rna", "size_prot", "imagerow", "imagecol","pulp","bf","mz","pals")
+head(df %>% select(all_of(selection)))
+```
+
+We use the coordinates to construct the neighborhood matrix
+```{r nbhd}
+coordsmat = cbind(df$imagerow, df$imagecol)
+W = matrix(0, nrow(coordsmat), nrow(coordsmat))
+for(i in 1:nrow(W)){
+  for(j in i:nrow(W)){
+    cp = crossprod(coordsmat[i,] - coordsmat[j,])
+    if(cp > 0 && cp < 45){
+      W[i,j] = 1
+      W[j,i] = 1
+    }
+  }
+}
+```
+
+In summary, minimum data requirements for estimation is simply a dataset with one row per spot that contains the assay measurements and sizes together with the neighborhood matrix associated with the ST data in mind. 
+
+## Model estimation
+### 1 protein | 1 genes
+We begin by estimating a RNA model for the gene Cd3e. First we use the script `LCAR.R` which gives the structure of the random effects component for the univariate case. The main element supplied is the graph of the CAR prior, but also the min and max value of the convolution parameter is set. 
+
+```{r rnamodel}
+m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
+```
+
+The model formula is specified
+```{r rnaformula}
+aar = c("pulp", "bf", "mz", "pals")
+rnaform <- as.formula(paste(paste("Cd3e", "~") , paste(aar[2:4],collapse = "+")))
+update(rnaform,.~. + f(idx, model = m))
+```
+Note that `idx` is a column set to `idx = 1:nrow(df)` and will always be set in this manner unless repeated measurements are observed which is not the case in ST data. The `f(idx, model = m)` now specifies a CAR random effect and the remaining terms on the right hand side of $~$ are fixed effects.
+
+The model is fitted through `inla()` call 
+```{r rnaest, warning = F, message = F}
+inlaRna <- inla(update(rnaform,.~. + f(idx, model = m)), data = df, 
+              family = "poisson", offset = log(size_rna))
+inlaRna$summary.hyperpar
+```
+
+The random effects are estimated as
+```{r re, warning = F, message = F}
+inlaRna$summary.hyperpar
+```
+
+The fixed effects are estimated as
+```{r fe, warning = F, message = F}
+inlaRna$summary.fixed
+```
+
+We then take the estimated random effects from the RNA model as plug-in estimators in the protein model to estimate the gene to protein effects. The protein | 1 gene program is outlined in `CCAR.R` and has the extra term `phi`. DIC is not calculated by default but is added through the `control.compute` argument
+```{r prot, warning = F, message = F}
+m <- inla.CCAR.model(W = W, alpha.min = 0, alpha.max = 1, phi = inlaRna$summary.random$idx$mean)
+protform <- as.formula(paste(paste("CD3", "~"), paste(aar[2:4],collapse = "+")))
+inlaProt <- inla(update(protform,.~. + f(idx, model = m)), 
+                 data = df, family = "poisson",
+                 offset = log(size_prot),
+                 control.compute = list(dic = TRUE))
+```
+
+The two bottom rows of the estimated hyper parameters correspond to the cross-assay parameters, where the third row is spot-to-spot effect and the fourth is neighbor-to-spot effect. 
+```{r reprot, warning = F, message = F}
+inlaProt$summary.hyperpar
+```
+
+The DIC is obtained as
+```{r protdic1, warning = F, message = F}
+inlaProt$dic$dic
+```
+
+
+### 1 protein | 2 genes
+Main difference lines in building the model matrix of the gene model. Note that in this case, all levels of the cell annotations are included and the intercept dropped.
+```{r 2genes, warning = F, message = F}
+k = 2
+X = kronecker(diag(rep(1,k)), as.matrix(df[, names(df) %in% aar]))
+mdat = data.frame("rna" = unname(unlist(as.vector(df[, names(df) %in% c("Cd3e", "Adgre1")]))), 
+                  "idx" = 1:(k*nrow(df)), 
+                  "size" = rep(df$size_rna, k))
+mdat = cbind(mdat, X)
+names(mdat)[4:ncol(mdat)] = paste(aar, rep(paste("_", 1:k, sep = ""), each = 4), sep = "")
+rnaform = as.formula(paste("rna ~", paste(names(mdat)[4:(ncol(mdat))], collapse= "+"), "-1"))
+rnaform
+```
+
+The estimation follow the single gene case, only that we now use the bivariate CAR specification outlined in `MCAR.R`. Row 1 now correspond to the (shared) convolution parameter, row 2 & 3 correspond to the variances of the CAR priors and row 4 correspond to the correlation of the two gene CAR priors
+```{r 2genesest, warning = F, message = F}
+m <- inla.MCAR.model(W = W, k = k, alpha.min = 0, alpha.max = 1)
+inlaRna <- inla(update(rnaform, .~. + f(idx, model = m)), 
+              data = mdat, family = "poisson", offset = log(size))
+
+inlaRna$summary.hyperpar
+```
+
+Construction of the protein | 2 gene follow the same logic as for the single gene case, only that the plug-in is now defined as a matrix. Row 3 & 5 correspond to the spot-to-spot effects of Cd3e and Adgre1 respectively. Row 4 and 6 correspond to the neighbor-to-spot effects of Cd3e and Adgre1 respectively.
+```{r prot2genes, warning = F, message = F}
+m <- inla.MCCAR.model(W = W, phi = matrix(inlaRna$summary.random$idx$mean, ncol = k), 
+                      k = k, alpha.min = 0, alpha.max = 1)
+
+inlaProt <- inla(update(protform,.~. + f(idx, model = m)), 
+                 data = df, family = "poisson",
+                 offset = log(size_prot),
+                 control.compute = list(dic = TRUE))
+
+inlaProt$summary.hyperpar
+```
+The DIC increased so the larger model is not favoured.
+```{r multdic, warning = F, message = F}
+inlaProt$dic$dic
+```
