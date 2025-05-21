@@ -51,6 +51,7 @@ To recreate the results of figure e & f, see `./scripts/SPOTS/SpleenPred.R`
 The necessary files are 
 ```
 .
+├── GSE198353_mmtv_pymt.csv
 ├── GSE198353_mmtv_pymt_ADT.csv.gz
 ├── GSE198353_mmtv_pymt_GEX_filtered_feature_bc_matrix.h5
 ├── GSE198353_mmtv_pymt_spatial.tar.gz
@@ -62,7 +63,7 @@ The necessary files are
     ├── tissue_lowres_image.png
     └── tissue_positions_list.csv
 ```
-Example code can be found in `./scripts/SPOTS/BreastPrediction.R`
+`GSE198353_mmtv_pymt.csv` are manual annotations found in `./data`. Example code can be found in `./scripts/SPOTS/BreastPrediction.R`.
 
 # Other datasets
 ## Visium10x, tonsil
