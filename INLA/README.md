@@ -8,13 +8,13 @@ An excellent resource on modeling with `INLA` is [Bayesian inference with INLA](
 
 
 ## Single assay
-Gaussian Markov Random Fields (GMRF) as defined in [1] are considered
+Gaussian Markov Random Fields (GMRF) defined as
 
 $$
 \psi \sim \mathcal{N}_{n}\Big(\mathbf{0}, \tau^{-1}\big(\pi\mathbf{I} + (1-\pi)(\mathbf{D}-\mathbf{W})\big)^{-1}\Big)
 $$
 
-where $\pi \in [0,1)$ weights between independent and spatially structured noise. 
+where $\pi \in [0,1)$ weights between independent and spatially structured noise. This GMRF is implemented in `LCAR.R` where the L stands for Leroux [1].
 
 ## Multiple assays
 For the non-conditional multivariate CAR (MCAR) we can utilize parts of [`INLAMSM`](https://github.com/becarioprecario/INLAMSM/tree/master) in implementation with a modified precision matrix following [1]. Thus for the joint modeling of RNAs we refer to Sections 2.3 and 2.4 of [2]. The relevant scripts `./INLA/MCAR.R` and `./INLA/indepMCAR.R`.
@@ -32,3 +32,9 @@ p(\psi^{(1)} | \psi^{(2)}_1, \ldots, \psi^{(2)}_G) = \mathcal{N}_n \bigg( \sum _
 $$
 
 The relevant scripts are implemented in `./INLA/MCCAR.R` and `./INLA/spotMCCAR.R`($\eta_{1,i} = 0\  \forall i$).
+
+[1] Leroux, B., X. Lei, and N. Breslow. 1999. “Estimation of Disease Rates in Small Areas: A New Mixed Model for Spatial Dependence.” In *Statistical Models in Epidemiology, the Environment and Clinical Trials*, edited by M Halloran and D Berry, 135–78. New York: Springer-Verlag.
+
+[2] Francisco, F., Gómez-Rubio, V., and Martinez-Beneito,  M. A. "Bayesian multivariate spatial models for lattice data with INLA." *arXiv preprint* arXiv:1909.10804 (2019).
+
+[3] Xiaoping, J., Carlin, B. P., and Banerjee, S. "Generalized hierarchical multivariate CAR models for areal data." *Biometrics* 61.4 (2005): 950-961.
