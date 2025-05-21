@@ -51,7 +51,6 @@ To recreate the results of figure e & f, see `./scripts/SPOTS/SpleenPred.R`
 The necessary files are 
 ```
 .
-├── GSE198353_mmtv_pymt.csv
 ├── GSE198353_mmtv_pymt_ADT.csv.gz
 ├── GSE198353_mmtv_pymt_GEX_filtered_feature_bc_matrix.h5
 ├── GSE198353_mmtv_pymt_spatial.tar.gz
