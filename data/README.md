@@ -22,3 +22,5 @@ df %>%
   coord_flip()
 ```
 ![github-small](https://github.com/nygctech/INLAomics/blob/main/data/breastcancer.png)
+
+<img src="https://github.com/nygctech/INLAomics/blob/main/data/breastcancer.png" width="150" height="280">
