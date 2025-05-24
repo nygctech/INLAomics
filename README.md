@@ -10,7 +10,7 @@ All analysis in manuscript is carried out in `R` V. 4.3.1 with packages `R-INLA`
 All models are implemented through the R-package [`INLA`](https://www.r-inla.org/) using the `inla.rgeneric.define()` method. The relevant scripts are under `./INLA/`
 
 ## Usage
-In `./tutorial` there is a [script](https://htmlpreview.github.io/?https://github.com/nygctech/INLAomics/blob/main/tutorial/tutorial.html) which gives some details of the implemented INLA methods and required format of the data. 
+In `./tutorial` there is a [script](https://htmlpreview.github.io/?https://github.com/nygctech/INLAomics/blob/main/tutorial/tutorial.html) which gives some details of the implemented INLA methods and expected data formats. 
 
 # Analysing the SPOTS data
 The data generated in [1] is considered where files can be accessed at [GSE198353](https://ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353). We have added cell annotations to two replicates of spleen tissue sections found in `./data`.
