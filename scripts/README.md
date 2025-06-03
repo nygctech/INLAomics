@@ -34,7 +34,7 @@ which produces the data frame (first 6 rows)
 
 In the dataframe, prot are the measurements of Podoplanin, likewise rna1 and rna2 are the measurements of Pdpn and Sparc respectively. 
 To produce different dataframes, changes should be made to `rownames(breast$Protein) == "Podoplanin")` and `select(all_of(c("Pdpn", "Sparc"))`
-accordingly. For example changing `"Podoplanin"` to `"CD117"` and `c("Pdpn", "Sparc")` to `c("B2m", "Rps16", "Rpl37a")` produces
+accordingly. For example changing `"Podoplanin"` to `"CD117"` and `c("Pdpn", "Sparc")` to `c("B2m", "Rps16", "Rpl37a")` produces the dataframe
 
 
 |spot|prot|size_prot|size_rna|idx|imagerow|imagecol|fbh|fbl|mac2|unknown|lymph|mac1|rna1|rna2|rna3|
