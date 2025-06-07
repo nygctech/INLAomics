@@ -6,7 +6,6 @@ library(foreach)
 
 source("./scripts/SPOTS/helpers.R")
 source("./scripts/utils.R")
-source("./scripts/utils.R")
 source("./INLA/LCAR.R")
 source("./INLA/MCAR.R")
 source("./INLA/CCAR.R")
