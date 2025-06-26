@@ -5,7 +5,7 @@ INLAomics is a hierarchical Bayesian model for analysing multiomic Spatial data 
 
 
 ## Versions & Installation
-All analysis in the manuscript is carried out in `R` V. 4.3.1 with packages `R-INLA` V. 23.12.17 and `R-stan` V. 2.26.23 (`Stan` V. 2.26.1). For instructions on installation we refer to [`R-INLA`](https://www.r-inla.org/download-install) and [`mc-stan`](https://mc-stan.org/install/).
+All analysis in manuscript is carried out in `R` V. 4.3.1 with packages `R-INLA` V. 23.12.17 and `R-stan` V. 2.26.23 (`Stan` V. 2.26.1). For instructions on installation we refer to [`R-INLA`](https://www.r-inla.org/download-install) and [`mc-stan`](https://mc-stan.org/install/). Scripts has been tested on Linux system (LinuxMint 22.1) and OS  with `R` V. 4.5.1 and `R-INLA` V. 25.06.07 with no issues.
 
 All models are implemented through the R-package [`INLA`](https://www.r-inla.org/) using the `inla.rgeneric.define()` method. The relevant scripts are under `./INLA/`
 
