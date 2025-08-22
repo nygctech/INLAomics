@@ -205,10 +205,17 @@ readSpotscancerlist = function(loc){
            ) %>%
     select(!Barcode)
 
-    return(list("RNA" = as.matrix(mmtv@assays$RNA@counts), 
-                "Protein" = as.matrix(mmtv@assays$CITE@counts), 
-                "AAR" = aar,
-                "coords" = coords))
+    if(packageVersion("Seurat") >= "5.0.0"){
+      return(list("RNA" = as.matrix(GetAssayData(mmtv, assay = "RNA", layer = "counts")), 
+                  "Protein" = as.matrix(GetAssayData(mmtv, assay = "CITE", layer = "counts")), 
+                  "AAR" = aar,
+                  "coords" = coords)) 
+    } else {
+      return(list("RNA" = as.matrix(mmtv@assays$RNA@counts), 
+                  "Protein" = as.matrix(mmtv@assays$CITE@counts), 
+                  "AAR" = aar,
+                  "coords" = coords)) 
+    }
 }
 
 # returns a dataframe with one spot per row with all proteins and genes specified by genes argument
