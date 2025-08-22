@@ -1,6 +1,25 @@
 library(Seurat)
 library(tidyverse)
 
+# For compatability with Seurat v5
+get_spatial_coords <- function(seurat_obj) {
+  coords <- GetTissueCoordinates(seurat_obj, scale = "lowres")
+  if (all(c("x", "y") %in% colnames(coords))) {
+    # Seurat v5 style
+    coords_out <- coords
+  } else if (all(c("imagerow", "imagecol") %in% colnames(coords))) {
+    # Seurat v4 style → convert to x/y
+    coords_out <- coords %>%
+      dplyr::rename(
+        y = imagecol,
+        x = imagerow
+      )
+  } else {
+    stop("Unknown Seurat version / coordinate format")
+  }
+  return(coords_out)
+}
+
 ## loc: location of the required files
 ## nreplicates: whether replicate 1 or 1&2 should be used
 # Required files can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353
@@ -20,7 +39,7 @@ readSpotsSpleen = function(loc, nreplicates = 1){
   coords1 = GetTissueCoordinates(spleen,scale = "lowres")
   
   # This is a manual fix of a spot that does not align with that of Figure 1 in Spots paper
-  coords1[which((coords1$imagerow > 250) & (coords1$imagecol > 500)),1:2] = c(235.7749, 379.6919 + (379.6919-373.2788))
+  coords1[which((coords1$x > 250) & (coords1$y > 500)),1:2] = c(235.7749, 379.6919 + (379.6919-373.2788))
   coords1$spot = rownames(coords1)
   
   prot1 = as.matrix(spleen@assays$CITE@counts)
@@ -256,7 +275,7 @@ predData = function(protein, W, cancerlist, aars, genepair = NULL, geneindex = 1
     select(!AARs)
   
   if(is.null(W)){
-    coordsmat = cbind(df$imagerow, df$imagecol)
+    coordsmat = cbind(df$x, df$y)
     W = matrix(0, nrow(coordsmat), nrow(coordsmat))
     for(i in 1:nrow(W)){
       for(j in i:nrow(W)){
@@ -270,7 +289,7 @@ predData = function(protein, W, cancerlist, aars, genepair = NULL, geneindex = 1
   }
   
   # fit a CAR model with genes in the model matrix
-  protform = as.formula(paste("prot ~ ", paste(names(df)[!(names(df) %in% c(aars[1], "spot", "prot", "size", "idx", "imagerow", "imagecol"))], collapse= "+")))
+  protform = as.formula(paste("prot ~ ", paste(names(df)[!(names(df) %in% c(aars[1], "spot", "prot", "size", "idx", "x", "y"))], collapse= "+")))
   m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
   prot.car <- inla(update(protform, . ~. + f(idx, model = m)), data = df, 
                    family = "poisson", offset = log(size))
@@ -309,7 +328,7 @@ cancerNbhdMat = function(cancerlist, radius = 55){
     mutate(spot = rownames(.)) %>%
     full_join(cancerlist$coords, by = "spot")
   
-  coordsmat = cbind(df$imagerow, df$imagecol)
+  coordsmat = cbind(df$x, df$y)
   W = matrix(0, nrow(coordsmat), nrow(coordsmat))
   for(i in 1:nrow(W)){
     for(j in i:nrow(W)){

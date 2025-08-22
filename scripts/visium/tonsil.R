@@ -3,7 +3,7 @@ library(tidyverse)
 library(foreach)
 library(Seurat)
 
-source("./scripts/Highplex/helpers.R")
+source("./scripts/SPOTS/helpers.R")
 source("./scripts/utils.R")
 source("./scripts/utils.R")
 source("./INLA/LCAR.R")
@@ -20,10 +20,12 @@ seruat_img <- Read10X_Image(paste(data_dir, "spatial", sep = ""))
 tonsil@images <- list(tonsil = seruat_img)
 
 # extract data
-coords = GetTissueCoordinates(tonsil) %>% 
+coords = GetTissueCoordinates(tonsil, scale = "lowres") %>% 
   mutate(spot = rownames(.))
-prot = as.matrix(tonsil@assays$Protein@counts)
-RNA = as.matrix(tonsil@assays$RNA@counts)
+#prot = as.matrix(tonsil@assays$Protein@counts)
+prot = RNA = GetAssayData(tonsil, assay = "Protein", layer = "counts")
+#RNA = as.matrix(tonsil@assays$RNA@counts) # Does not work in V5.x.x
+RNA = GetAssayData(tonsil, assay = "RNA", layer = "counts")
 
 # compute sizes
 rna_size = unname(colSums(RNA)) / median(colSums(RNA))
@@ -60,7 +62,7 @@ names(mdat) = str_replace(names(mdat), "-", "_")
 W = matrix(0, nrow(mdat), nrow(mdat))
 for(i in 1:nrow(W)){
   for(j in i:nrow(W)){
-    cp = crossprod(c(mdat$imagerow[i], mdat$imagecol[i]) - c(mdat$imagerow[j], mdat$imagecol[j]))
+    cp = crossprod(c(mdat$x[i], mdat$y[i]) - c(mdat$x[j], mdat$y[j]))
     if(cp <= 35 && cp > 0){
       W[i,j] = 1
       W[j,i] = 1
@@ -69,7 +71,7 @@ for(i in 1:nrow(W)){
 }
 
 ## find the top genes from the regression coefficents
-protform = as.formula(paste("prot ~ ", paste(names(mdat)[!(names(mdat) %in% c("spot", "prot", "size", "idx", "imagerow", "imagecol"))], collapse= "+")))
+protform = as.formula(paste("prot ~ ", paste(names(mdat)[!(names(mdat) %in% c("spot", "prot", "size", "idx", "x", "y"))], collapse= "+")))
 m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
 prot.car <- inla(update(protform, . ~. + f(idx, model = m)), data = mdat, family = "poisson", offset = log(size))
 top_preds = prot.car$summary.fixed %>% mutate(mean = abs(mean)) %>% arrange(desc(mean)) %>% rownames
@@ -101,7 +103,7 @@ df = data.frame("spot" = dimnames(prot)[[2]],
 
 
 ## prediction square
-pred_idx = which(df$imagecol >= 200 & df$imagecol <= 300 & df$imagerow <= 400 & df$imagerow >= 300)
+pred_idx = which(df$x >= 200 & df$x <= 300 & df$y <= 400 & df$y >= 300)
 df_pred = df[pred_idx,]
 df$prot[pred_idx] = NA
 
