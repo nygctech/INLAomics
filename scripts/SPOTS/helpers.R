@@ -17,7 +17,7 @@ readSpotsSpleen = function(loc, nreplicates = 1){
   spleen_img@key <- "spleen"
   spleen@images <- list(spleen = spleen_img)
   SpatialDimPlot(spleen)
-  coords1 = GetTissueCoordinates(spleen)
+  coords1 = GetTissueCoordinates(spleen,scale = "lowres")
   
   # This is a manual fix of a spot that does not align with that of Figure 1 in Spots paper
   coords1[which((coords1$imagerow > 250) & (coords1$imagecol > 500)),1:2] = c(235.7749, 379.6919 + (379.6919-373.2788))
@@ -51,7 +51,7 @@ readSpotsSpleen = function(loc, nreplicates = 1){
     spleen_img@key <- "spleen"
     spleen@images <- list(spleen = spleen_img)
     SpatialDimPlot(spleen)
-    coords2 = GetTissueCoordinates(spleen)
+    coords2 = GetTissueCoordinates(spleen, scale = "lowres")
     coords2$spot = rownames(coords2)
     
     prot2 = as.matrix(spleen@assays$CITE@counts)
@@ -188,7 +188,7 @@ readSpotscancerlist = function(loc){
   mmtv$nFeature_CITE <- mmtv_adt$nFeature_CITE
   mmtv_image@key <- "A"
   mmtv@images <- list(A = mmtv_image)
-  coords = GetTissueCoordinates(mmtv)
+  coords = GetTissueCoordinates(mmtv, scale = "lowres")
   coords$spot = rownames(coords)
   rownames(coords) = NULL
 
