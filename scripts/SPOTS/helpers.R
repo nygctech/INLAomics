@@ -201,9 +201,9 @@ spotsInla = function(df, W, protein, preds, aar, neighbors = TRUE, ind = FALSE, 
 }
 
 readSpotscancerlist = function(loc){
-  mmtv_gex <- Read10X_h5(paste(loc,'GSE198353_mmtv_pymt_GEX_filtered_feature_bc_matrix.h5', sep = ""))
-  mmtv_adt <- read.csv(paste(loc, 'GSE198353_mmtv_pymt_ADT.csv.gz', sep = ""), header = TRUE, row.names = 1, check.names = FALSE)
-  mmtv_image <- Read10X_Image(paste(loc, 'spatial', sep = ""))
+  mmtv_gex <- Read10X_h5(file.path(loc,'GSE198353_mmtv_pymt_GEX_filtered_feature_bc_matrix.h5'))
+  mmtv_adt <- read.csv(file.path(loc, 'GSE198353_mmtv_pymt_ADT.csv.gz'), header = TRUE, row.names = 1, check.names = FALSE)
+  mmtv_image <- Read10X_Image(file.path(loc, 'spatial'))
   mmtv <- CreateSeuratObject(mmtv_gex, assay = "RNA", project = "MMTV")
   mmtv_adt <- CreateSeuratObject(mmtv_adt, assay = "CITE", project = "MMTV")
   mmtv@assays$CITE <- mmtv_adt@assays$CITE
@@ -211,7 +211,7 @@ readSpotscancerlist = function(loc){
   mmtv$nFeature_CITE <- mmtv_adt$nFeature_CITE
   mmtv_image@key <- "A"
   mmtv@images <- list(A = mmtv_image)
-  coords = GetTissueCoordinates(mmtv, scale = "lowres")
+  coords = get_spatial_coords(mmtv) #GetTissueCoordinates(mmtv, scale = "lowres")
   coords$spot = rownames(coords)
   rownames(coords) = NULL
 
@@ -243,7 +243,7 @@ readSpotscancerlist = function(loc){
 
 # returns a dataframe with one spot per row with all proteins and genes specified by genes argument
 SpotsCancerData = function(loc, genes){
-  cancerlist = readSpotscancerlist("./spots/cancer/") # set to location with data
+  cancerlist = readSpotscancerlist(loc) # set to location with data
   rna_size = unname(colSums(cancerlist$RNA)) / median(colSums(cancerlist$RNA))
   protein_size = unname(colSums(cancerlist$Protein)) / median(colSums(cancerlist$Protein))
   prot = as.data.frame(t(cancerlist$Protein)) %>%
