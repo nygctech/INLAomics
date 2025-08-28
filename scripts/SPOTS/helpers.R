@@ -60,8 +60,8 @@ readSpotsSpleen = function(loc, nreplicates = 1){
   if(nreplicates == 1){
     return(list("RNA" = RNA1, "protein" = prot1, "AAR" = aar1, "coords" = coords1))
   } else {
-    spleen_data <- Read10X_h5(paste(loc, 'GSE198353_spleen_rep_2_filtered_feature_bc_matrix.h5', sep = ""))
-    spleen_img <- Read10X_Image(paste(loc,'spatial2', sep=""))
+    spleen_data <- Read10X_h5(file.path(loc, 'GSE198353_spleen_rep_2_filtered_feature_bc_matrix.h5'))
+    spleen_img <- Read10X_Image(file.path(loc,'spatial2'))
     spleen <- CreateSeuratObject(spleen_data$`Gene Expression`, assay = "RNA", project = "spleen")
     spleen_cite <- CreateSeuratObject(spleen_data$`Antibody Capture`, assay = "CITE", project = "spleen")
     
@@ -72,7 +72,8 @@ readSpotsSpleen = function(loc, nreplicates = 1){
     spleen_img@key <- "spleen"
     spleen@images <- list(spleen = spleen_img)
     SpatialDimPlot(spleen)
-    coords2 = GetTissueCoordinates(spleen, scale = "lowres")
+    #coords2 = GetTissueCoordinates(spleen, scale = "lowres")
+    coords2 = get_spatial_coords(spleen)
     coords2$spot = rownames(coords2)
     
     #prot = as.matrix(spleen@assays$CITE@counts)
