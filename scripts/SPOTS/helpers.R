@@ -24,8 +24,8 @@ get_spatial_coords <- function(seurat_obj) {
 ## nreplicates: whether replicate 1 or 1&2 should be used
 # Required files can be found at https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE198353
 readSpotsSpleen = function(loc, nreplicates = 1){
-  spleen_data <- Read10X_h5(paste(loc, "GSE198353_spleen_rep_1_filtered_feature_bc_matrix.h5", sep = ""))
-  spleen_img <- Read10X_Image(paste(loc,'spatial',sep = ""))
+  spleen_data <- Read10X_h5(file.path(loc, "GSE198353_spleen_rep_1_filtered_feature_bc_matrix.h5"))
+  spleen_img <- Read10X_Image(file.path(loc,'spatial'))
   spleen <- CreateSeuratObject(spleen_data$`Gene Expression`, assay = "RNA", project = "spleen")
   spleen_cite <- CreateSeuratObject(spleen_data$`Antibody Capture`, assay = "CITE", project = "spleen")
   
@@ -42,10 +42,12 @@ readSpotsSpleen = function(loc, nreplicates = 1){
   coords1[which((coords1$x > 250) & (coords1$y > 500)),1:2] = c(235.7749, 379.6919 + (379.6919-373.2788))
   coords1$spot = rownames(coords1)
   
-  prot1 = as.matrix(spleen@assays$CITE@counts)
-  RNA1 = as.matrix(spleen@assays$RNA@counts)
-  
-  aar1 <- read.csv(paste(loc, 'GSE198353_spleen_rep_1.csv', sep = ""), header = T)
+  #prot = as.matrix(spleen@assays$CITE@counts)
+  prot1 = RNA = GetAssayData(spleen, assay = "CITE", layer = "counts")
+  #RNA1 = as.matrix(spleen@assays$RNA@counts) # Does not work in V5.x.x
+  RNA1 = GetAssayData(spleen, assay = "RNA", layer = "counts")
+
+  aar1 <- read.csv(file.path(loc, 'GSE198353_spleen_rep_1.csv'), header = T)
   aar1[nrow(aar1)+1, ] = c("ATCATGGACTACCGAC-1", "Red pulp")
   aar1 = aar1 %>%
     mutate(spot = Barcode,
@@ -73,10 +75,12 @@ readSpotsSpleen = function(loc, nreplicates = 1){
     coords2 = GetTissueCoordinates(spleen, scale = "lowres")
     coords2$spot = rownames(coords2)
     
-    prot2 = as.matrix(spleen@assays$CITE@counts)
-    RNA2 = as.matrix(spleen@assays$RNA@counts)
+    #prot = as.matrix(spleen@assays$CITE@counts)
+    prot2 = RNA = GetAssayData(spleen, assay = "CITE", layer = "counts")
+    #RNA1 = as.matrix(spleen@assays$RNA@counts) # Does not work in V5.x.x
+    RNA2 = GetAssayData(spleen, assay = "RNA", layer = "counts")
     
-    aar2 <- read.csv(paste(loc, 'GSE198353_spleen_rep_2.csv', sep = ""), header = T)
+    aar2 <- read.csv(file.path(loc, 'GSE198353_spleen_rep_2.csv'), header = T)
     aar2 = aar2 %>%
       mutate(spot = Barcode,
              pulp = ifelse(AARs == "Red pulp", 1, 0),
