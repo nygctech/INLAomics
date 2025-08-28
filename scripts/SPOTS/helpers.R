@@ -293,7 +293,7 @@ predData = function(protein, W, cancerlist, aars, genepair = NULL, geneindex = 1
   }
   
   # fit a CAR model with genes in the model matrix
-  protform = as.formula(paste("prot ~ ", paste(names(df)[!(names(df) %in% c(aars[1], "spot", "prot", "size", "idx", "x", "y"))], collapse= "+")))
+  protform = as.formula(paste("prot ~ ", paste(names(df)[!(names(df) %in% c(aars[1], "spot", "prot", "size", "idx", "x", "y", "cell"))], collapse= "+")))
   m <- inla.LCAR.model(W = W, alpha.min = 0, alpha.max = 1)
   prot.car <- inla(update(protform, . ~. + f(idx, model = m)), data = df, 
                    family = "poisson", offset = log(size))
