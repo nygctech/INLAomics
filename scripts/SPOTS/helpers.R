@@ -36,8 +36,8 @@ readSpotsSpleen = function(loc, nreplicates = 1){
   spleen_img@key <- "spleen"
   spleen@images <- list(spleen = spleen_img)
   SpatialDimPlot(spleen)
-  coords1 = GetTissueCoordinates(spleen,scale = "lowres")
-  
+  #coords1 = GetTissueCoordinates(spleen,scale = "lowres")
+  coords1 = get_spatial_coords(spleen)
   # This is a manual fix of a spot that does not align with that of Figure 1 in Spots paper
   coords1[which((coords1$x > 250) & (coords1$y > 500)),1:2] = c(235.7749, 379.6919 + (379.6919-373.2788))
   coords1$spot = rownames(coords1)
