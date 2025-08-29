@@ -133,7 +133,7 @@ SpotsProteinData = function(loc, genepairs){
     right_join(spotsdata$AAR2, by = "spot")
   
   # move replicate 1 to the right of replicate 2
-  df_2$imagecol = df_2$imagecol + (max(df_1$imagecol)-min(df_2$imagecol)) + 5
+  df_2$y = df_2$y + (max(df_1$y)-min(df_2$y)) + 5
   
   df = rbind(df_1, df_2) %>% mutate(idx = 1:nrow(.)) %>% select(!AARs)
   names(df)[str_detect(names(df), "-")] = c("F480", "CD169", "B220")
