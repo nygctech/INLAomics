@@ -135,7 +135,7 @@ SpotsProteinData = function(loc, genepairs){
   # move replicate 1 to the right of replicate 2
   df_2$y = df_2$y + (max(df_1$y)-min(df_2$y)) + 5
   
-  df = rbind(df_1, df_2) %>% mutate(idx = 1:nrow(.)) %>% select(!(AARs, cell))
+  df = rbind(df_1, df_2) %>% mutate(idx = 1:nrow(.)) %>% select(!c(AARs, cell))
   names(df)[str_detect(names(df), "-")] = c("F480", "CD169", "B220")
   
   return(df)
