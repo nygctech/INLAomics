@@ -55,7 +55,7 @@ readSpotsSpleen = function(loc, nreplicates = 1){
            bf = ifelse(AARs == "B follicle", 1, 0),
            mz = ifelse(AARs == "Marginal zone", 1, 0),
            pals = ifelse(AARs == "PALS", 1, 0)) %>% 
-    select(!Barcode)
+    dplyr::select(!Barcode)
   
   if(nreplicates == 1){
     return(list("RNA" = RNA1, "protein" = prot1, "AAR" = aar1, "coords" = coords1))
@@ -88,7 +88,7 @@ readSpotsSpleen = function(loc, nreplicates = 1){
              bf = ifelse(AARs == "B follicle", 1, 0),
              mz = ifelse(AARs == "Marginal zone", 1, 0),
              pals = ifelse(AARs == "PALS", 1, 0)) %>% 
-      select(!Barcode)
+      dplyr::select(!Barcode)
     
     return(list("RNA1" = RNA1, "RNA2"=RNA2, "protein1" = prot1, "protein2" = prot2, 
                 "AAR1" = aar1, "AAR2" = aar2, "coords1" = coords1, "coords2" = coords2))
@@ -106,7 +106,7 @@ SpotsProteinData = function(loc, genepairs){
   
   # Create a dataframe for slide 1 with the genes matching the proteins
   rna_1 = as.data.frame(t(spotsdata$RNA1)) %>%
-    select(unname(sapply(genepairs, c))) %>%
+    dplyr::select(unname(sapply(genepairs, c))) %>%
     mutate(spot = colnames(spotsdata$RNA1),
            size_rna = rna_size[1:nrow(.)])
   
@@ -120,7 +120,7 @@ SpotsProteinData = function(loc, genepairs){
   
   # Create a dataframe for slide 2 with the genes matching the proteins
   rna_2 = as.data.frame(t(spotsdata$RNA2)) %>%
-    select(unname(sapply(genepairs, c))) %>%
+    dplyr::select(unname(sapply(genepairs, c))) %>%
     mutate(spot = colnames(spotsdata$RNA2),
            size_rna = rna_size[(nrow(rna_1)+1):length(rna_size)])
   
@@ -135,7 +135,7 @@ SpotsProteinData = function(loc, genepairs){
   # move replicate 1 to the right of replicate 2
   df_2$y = df_2$y + (max(df_1$y)-min(df_2$y)) + 5
   
-  df = rbind(df_1, df_2) %>% mutate(idx = 1:nrow(.)) %>% select(!c(AARs, cell))
+  df = rbind(df_1, df_2) %>% mutate(idx = 1:nrow(.)) %>% dplyr::select(!c(AARs, cell))
   names(df)[str_detect(names(df), "-")] = c("F480", "CD169", "B220")
   
   return(df)
@@ -227,7 +227,7 @@ readSpotscancerlist = function(loc){
            lymph = ifelse(AARs == "Lymphocyte-enriched", 1, 0),
            mac1 = ifelse(AARs == "Mac1-enriched", 1, 0)
            ) %>%
-    select(!Barcode)
+    dplyr::select(!Barcode)
 
     if(packageVersion("Seurat") >= "5.0.0"){
       return(list("RNA" = as.matrix(GetAssayData(mmtv, assay = "RNA", layer = "counts")), 
@@ -270,14 +270,14 @@ predData = function(protein, W, cancerlist, aars, genepair = NULL, geneindex = 1
   rna_size = unname(colSums(cancerlist$RNA)) / median(colSums(cancerlist$RNA))
   protein_size = unname(colSums(cancerlist$Protein)) / median(colSums(cancerlist$Protein))
   df = as.data.frame(t(cancerlist$RNA)) %>%
-    select(names(sort(apply(cancerlist$RNA,1,mean), T))[geneindex]) %>%
+    dplyr::select(names(sort(apply(cancerlist$RNA,1,mean), T))[geneindex]) %>%
     mutate(spot = rownames(.),
            prot = unname(cancerlist$Protein[which(rownames(cancerlist$Protein) == protein),]),
            size = protein_size,
            idx = 1:nrow(.)) %>%
     full_join(cancerlist$coords, by = "spot") %>%
     full_join(cancerlist$AAR, by = "spot") %>%
-    select(!AARs)
+    dplyr::select(!AARs)
   
   if(is.null(W)){
     coordsmat = cbind(df$x, df$y)
@@ -314,13 +314,13 @@ predData = function(protein, W, cancerlist, aars, genepair = NULL, geneindex = 1
                   "idx" = 1:length(rna_size)) %>%
     full_join(., cancerlist$coords, by = "spot") %>%
     full_join(cancerlist$AAR, by = "spot") %>%
-    select(!AARs)
+    dplyr::select(!AARs)
   
   # assumes that the rows of protein and rna are the same in terms of barcodes
   rna = t(cancerlist$RNA[which(rownames(cancerlist$RNA) %in% top_preds),])
   rownames(rna) = NULL
   rna = as.data.frame(rna) %>%
-    select(all_of(top_preds))
+    dplyr::select(all_of(top_preds))
   names(rna) = paste("rna", 1:npreds, sep = "")
   
   return(list(df = cbind(df, rna), top_preds = top_preds))
