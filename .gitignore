@@ -10,3 +10,4 @@ debug.*
 *.vscode
 R/
 lightning_logs
+saved_model
