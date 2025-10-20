@@ -5,7 +5,7 @@ This folder contains example scripts for prediction of protein expression using 
 We only include some specific examples, but the scripts are easily generalizable to any data/protein in the paper.
 
 ## Requirements
-Pip freeze files can be found under `./totalvi/requirements.txt` and `./scarches/requirements.txt`. We note some difficulties in setting up the conda environments of [1] on macOS, however we ran `totalVI` on macOS with `Python v. 3.13.5` and we ran `scArches` on Linux (LinuxMint 22.1) `Python v. 3.13.5`. 
+Pip freeze files can be found under `./totalvi/requirements.txt` and `./scarches/requirements.txt`. We note some difficulties in setting up the conda environments of [1] on macOS, however we ran `totalVI` on macOS with `Python v. 3.13.5` and we ran `scArches` on Linux (LinuxMint 22.1) `Python v. 3.10.18`. 
 
 ## References
 [1]: Hu, Y., Wan, S., Luo, Y., Li, Y., Wu, T., Deng, W., ... & Qu, K. (2024). Benchmarking algorithms for single-cell multi-omics prediction and integration. Nature Methods, 21(11), 2182-2194.
